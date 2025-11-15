@@ -139,3 +139,106 @@ def push_events_to_google_calendar(creds: Credentials, events, calendar_id="prim
 
         except Exception as e:
             print(f"❌ Failed to add event '{event.get('title', 'Untitled Event')}': {e}")
+
+def baseline_schedule(existing_events, new_task, user_info, buffer_minutes=15):
+    """
+    Deterministic baseline scheduler with priority weighting and buffer handling.
+    
+    Args:
+        existing_events (list): [{title, start, end}]
+        new_task (dict): {title, estimated_hours, priority, deadline}
+        user_info (dict): {working_hours: {"start": "HH:MM", "end": "HH:MM"}}
+        buffer_minutes (int): Minutes of required buffer between events.
+        
+    Returns:
+        List of new event dicts formatted like ChatGPT output.
+    """
+
+    task_title = new_task["title"]
+    hours_needed = float(new_task["estimated_hours"])
+    priority = int(new_task.get("priority", 3))  # default medium
+    deadline = datetime.fromisoformat(new_task["deadline"])
+    
+    # Priority weight scaling
+    PRIORITY_WEIGHTS = {1: 0.8, 2: 1.0, 3: 1.15, 4: 1.3, 5: 1.5}
+    hours_needed *= PRIORITY_WEIGHTS.get(priority, 1.0)
+
+    # Working window
+    work_start = user_info.get("working_hours", {}).get("start", "09:00")
+    work_end   = user_info.get("working_hours", {}).get("end", "17:00")
+    ws_h, ws_m = map(int, work_start.split(":"))
+    we_h, we_m = map(int, work_end.split(":"))
+    
+    # Organize existing events by day
+    busy = {}
+    for ev in existing_events:
+        s = datetime.fromisoformat(ev["start"])
+        e = datetime.fromisoformat(ev["end"])
+        busy.setdefault(s.date(), []).append((s, e))
+    
+    # Days from today to deadline inclusive
+    today = datetime.now().date()
+    days = []
+    d = today
+    while d <= deadline.date():
+        days.append(d)
+        d += timedelta(days=1)
+
+    hrs_per_day = hours_needed / len(days)
+    new_events = []
+
+    for day in days:
+        if hours_needed <= 0:
+            break
+        
+        start_block = datetime(day.year, day.month, day.day, ws_h, ws_m)
+        end_block   = datetime(day.year, day.month, day.day, we_h, we_m)
+
+        # Start with one full free chunk
+        free_blocks = [(start_block, end_block)]
+        
+        # Subtract busy events with buffer
+        if day in busy:
+            for (bstart, bend) in sorted(busy[day]):
+                temp = []
+                for (fb_start, fb_end) in free_blocks:
+                    buf_start = bstart - timedelta(minutes=buffer_minutes)
+                    buf_end   = bend + timedelta(minutes=buffer_minutes)
+
+                    if buf_end <= fb_start or buf_start >= fb_end:
+                        temp.append((fb_start, fb_end))
+                    else:
+                        if fb_start < buf_start:
+                            temp.append((fb_start, buf_start))
+                        if buf_end < fb_end:
+                            temp.append((buf_end, fb_end))
+                free_blocks = temp
+        
+        # Allocate hours
+        hours_today = min(hrs_per_day, hours_needed)
+        minutes_needed = int(hours_today * 60)
+
+        for (fb_start, fb_end) in free_blocks:
+            free_minutes = int((fb_end - fb_start).total_seconds() / 60)
+            if free_minutes <= 30:  # skip small fragments
+                continue
+            
+            duration = min(free_minutes, minutes_needed)
+            if duration < 30:
+                continue
+            
+            block_end = fb_start + timedelta(minutes=duration)
+            new_events.append({
+                "title": task_title,
+                "start": fb_start.isoformat(),
+                "end": block_end.isoformat(),
+                "description": f"Work on {task_title} (Priority {priority})"
+            })
+            minutes_needed -= duration
+            hours_needed -= duration / 60
+
+            if minutes_needed <= 0:
+                break
+
+    return new_events
+
