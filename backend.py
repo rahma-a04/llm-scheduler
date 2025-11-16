@@ -142,102 +142,111 @@ def push_events_to_google_calendar(creds: Credentials, events, calendar_id="prim
 
 def baseline_schedule(existing_events, new_task, user_info, buffer_minutes=15):
     """
-    Deterministic baseline scheduler with priority weighting and buffer handling.
-    
-    Args:
-        existing_events (list): [{title, start, end}]
-        new_task (dict): {title, estimated_hours, priority, deadline}
-        user_info (dict): {working_hours: {"start": "HH:MM", "end": "HH:MM"}}
-        buffer_minutes (int): Minutes of required buffer between events.
-        
-    Returns:
-        List of new event dicts formatted like ChatGPT output.
+    Algorithm to create a schedule based on a deterministic (greedy) algorithm.
+
+    Returns: List of new events to be scheduled.
     """
 
-    task_title = new_task["title"]
-    hours_needed = float(new_task["estimated_hours"])
-    priority = int(new_task.get("priority", 3))  # default medium
-    deadline = datetime.fromisoformat(new_task["deadline"])
-    
-    # Priority weight scaling
-    PRIORITY_WEIGHTS = {1: 0.8, 2: 1.0, 3: 1.15, 4: 1.3, 5: 1.5}
-    hours_needed *= PRIORITY_WEIGHTS.get(priority, 1.0)
+    # user prefs
+    work_start = user_info["working_hours"]["start"]  # "09:00"
+    work_end = user_info["working_hours"]["end"]      # "22:00"
+    break_times = user_info.get("break_times", [])
+    max_daily_hours = user_info.get("max_daily_workload_hours", 24)
 
-    # Working window
-    work_start = user_info.get("working_hours", {}).get("start", "09:00")
-    work_end   = user_info.get("working_hours", {}).get("end", "17:00")
     ws_h, ws_m = map(int, work_start.split(":"))
     we_h, we_m = map(int, work_end.split(":"))
-    
-    # Organize existing events by day
+
+    # task info
+    title = new_task["title"]
+    hours_needed = float(new_task["estimated_duration_hours"])
+    deadline = datetime.fromisoformat(new_task["deadline"])
+    can_split = bool(new_task.get("can_be_split", True))
+    priority = new_task.get("priority", "medium")
+
+    PRIORITY_WEIGHTS = {"low": 0.8, "medium": 1.0, "high": 1.3}
+    hours_needed *= PRIORITY_WEIGHTS.get(priority, 1.0)
+
+    # build busy schedule
     busy = {}
     for ev in existing_events:
         s = datetime.fromisoformat(ev["start"])
         e = datetime.fromisoformat(ev["end"])
-        busy.setdefault(s.date(), []).append((s, e))
-    
-    # Days from today to deadline inclusive
-    today = datetime.now().date()
-    days = []
-    d = today
-    while d <= deadline.date():
-        days.append(d)
-        d += timedelta(days=1)
+        day = s.date()
+        busy.setdefault(day, []).append((s, e))
 
-    hrs_per_day = hours_needed / len(days)
+    # add break times to busy schedule
+    today = datetime.now().date()
+    last_day = deadline.date()
+
+    while today <= last_day:
+        for br in break_times:
+            bstart = datetime.fromisoformat(f"{today}T{br['start']}:00")
+            bend   = datetime.fromisoformat(f"{today}T{br['end']}:00")
+            busy.setdefault(today, []).append((bstart, bend))
+        today += timedelta(days=1)
+
+    # determine available days for task
+    all_days = []
+    current = datetime.now().date()
+    while current <= deadline.date():
+        all_days.append(current)
+        current += timedelta(days=1)
+
+    # daily target
+    hrs_per_day = hours_needed / len(all_days)
     new_events = []
 
-    for day in days:
+    # schedule
+    for day in all_days:
         if hours_needed <= 0:
             break
-        
-        start_block = datetime(day.year, day.month, day.day, ws_h, ws_m)
-        end_block   = datetime(day.year, day.month, day.day, we_h, we_m)
 
-        # Start with one full free chunk
-        free_blocks = [(start_block, end_block)]
-        
-        # Subtract busy events with buffer
+        start_work = datetime(day.year, day.month, day.day, ws_h, ws_m)
+        end_work = datetime(day.year, day.month, day.day, we_h, we_m)
+
+        free_blocks = [(start_work, end_work)]
+
+        # busy times and buffers
         if day in busy:
-            for (bstart, bend) in sorted(busy[day]):
+            for (bs, be) in sorted(busy[day]):
+                adj_start = bs - timedelta(minutes=buffer_minutes)
+                adj_end   = be + timedelta(minutes=buffer_minutes)
+
                 temp = []
-                for (fb_start, fb_end) in free_blocks:
-                    buf_start = bstart - timedelta(minutes=buffer_minutes)
-                    buf_end   = bend + timedelta(minutes=buffer_minutes)
-
-                    if buf_end <= fb_start or buf_start >= fb_end:
-                        temp.append((fb_start, fb_end))
+                for (fs, fe) in free_blocks:
+                    if adj_end <= fs or adj_start >= fe:
+                        temp.append((fs, fe))
                     else:
-                        if fb_start < buf_start:
-                            temp.append((fb_start, buf_start))
-                        if buf_end < fb_end:
-                            temp.append((buf_end, fb_end))
+                        if fs < adj_start:
+                            temp.append((fs, adj_start))
+                        if adj_end < fe:
+                            temp.append((adj_end, fe))
                 free_blocks = temp
-        
-        # Allocate hours
-        hours_today = min(hrs_per_day, hours_needed)
-        minutes_needed = int(hours_today * 60)
 
-        for (fb_start, fb_end) in free_blocks:
-            free_minutes = int((fb_end - fb_start).total_seconds() / 60)
-            if free_minutes <= 30:  # skip small fragments
+        # working times
+        today_target = min(hrs_per_day, hours_needed, max_daily_hours)
+        minutes_needed = int(today_target * 60)
+
+        for (fs, fe) in free_blocks:
+            free_minutes = int((fe - fs).total_seconds() / 60)
+            if free_minutes < 30:
                 continue
-            
+
             duration = min(free_minutes, minutes_needed)
             if duration < 30:
                 continue
-            
-            block_end = fb_start + timedelta(minutes=duration)
+
+            block_end = fs + timedelta(minutes=duration)
             new_events.append({
-                "title": task_title,
-                "start": fb_start.isoformat(),
+                "title": title,
+                "start": fs.isoformat(),
                 "end": block_end.isoformat(),
-                "description": f"Work on {task_title} (Priority {priority})"
+                "description": f"{title} (Priority {priority})"
             })
             minutes_needed -= duration
             hours_needed -= duration / 60
 
-            if minutes_needed <= 0:
+            if minutes_needed <= 0 or not can_split:
                 break
 
     return new_events
