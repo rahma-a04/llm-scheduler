@@ -5,9 +5,9 @@ from typing import List, Optional
 
 
 class Priority(Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
+    LOW = 0
+    MEDIUM = 1
+    HIGH = 2
 
 
 @dataclass
@@ -64,12 +64,12 @@ class CalendarEvent:
 @dataclass
 class WorkingHours:
     """User's working/study hours."""
-    start: time
-    end: time
+    start_end: List[tuple[time, time]]
 
     def __post_init__(self):
-        if self.end <= self.start:
-            raise ValueError("End time must be after start time")
+        for start, end in self.start_end:
+            if end <= start:
+                raise ValueError("Each start time must be before the corresponding end time")
 
 
 @dataclass

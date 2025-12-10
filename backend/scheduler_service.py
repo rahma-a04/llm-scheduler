@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 import json
 import re
-from dotenv import load_dotenv
 import os
 
 # The scope defines what your app can access (here, read/write Calendar)

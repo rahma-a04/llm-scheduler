@@ -9,5 +9,5 @@ CS 4701 final project
 
 # Frontend 
 Running the app:
-- cd into frontend
+- cd into ui
 - Run `streamlit run app.py`

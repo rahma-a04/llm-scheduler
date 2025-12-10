@@ -1,6 +1,11 @@
 import streamlit as st
 from datetime import datetime, timedelta
 import json
+import sys
+sys.path.append('..')
+
+from backend.calendar_service import CalendarService
+from backend.models import CalendarEvent
 
 # Page configuration
 st.set_page_config(
@@ -21,6 +26,10 @@ if 'preferences' not in st.session_state:
         'break_pattern': '',
         'additional_notes': ''
     }
+if 'google_token' not in st.session_state:
+    st.session_state.google_token = None
+if 'calendar_service' not in st.session_state:
+    st.session_state.calendar_service = CalendarService()
 
 # Custom CSS for better styling
 st.markdown("""
@@ -209,22 +218,70 @@ with tab3:
         # Export options
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("📥 Export to Google Calendar", type="primary", use_container_width=True):
-                export_to_google_calendar(schedule)
-                st.success("✅ Exported to Google Calendar!")
-        
+            # Show connection status for export button
+            is_connected = st.session_state.google_token is not None
+
+            if not is_connected:
+                st.warning("⚠️ Connect Google Calendar in sidebar to export")
+
+            export_button_disabled = not is_connected
+
+            if st.button(
+                "📥 Export to Google Calendar",
+                type="primary",
+                use_container_width=True,
+                disabled=export_button_disabled
+            ):
+                with st.spinner("Exporting to Google Calendar..."):
+                    export_to_google_calendar(schedule)
+
         with col2:
-            if st.button("📄 Download as JSON", use_container_width=True):
-                json_str = json.dumps(schedule, indent=2)
-                st.download_button(
-                    label="💾 Download JSON",
-                    data=json_str,
-                    file_name="schedule.json",
-                    mime="application/json"
-                )
+            json_str = json.dumps(schedule, indent=2)
+            st.download_button(
+                label="📄 Download as JSON",
+                data=json_str,
+                file_name="schedule.json",
+                mime="application/json",
+                use_container_width=True
+            )
 
 # Sidebar
 with st.sidebar:
+    # Google Calendar OAuth Section
+    st.header("🔐 Google Calendar")
+
+    calendar_service = st.session_state.calendar_service
+    oauth_component = calendar_service.get_oauth_component()
+
+    if st.session_state.google_token is None:
+        # Not connected - show connect button
+        st.info("Connect your Google Calendar to export schedules")
+        result = oauth_component.authorize_button(
+            name="Connect Google Calendar",
+            icon="https://www.google.com/favicon.ico",
+            redirect_uri=calendar_service.redirect_uri,
+            scope=" ".join(CalendarService.SCOPES),
+            key="google_oauth",
+            use_container_width=True
+        )
+
+        if result and "token" in result:
+            st.session_state.google_token = result["token"]
+            st.success("✅ Connected to Google Calendar!")
+            st.rerun()
+    else:
+        # Connected - show status and disconnect option
+        st.success("✅ Connected to Google Calendar")
+
+        col1, col2 = st.columns([3, 1])
+        with col2:
+            if st.button("🔓", help="Disconnect", use_container_width=True):
+                st.session_state.google_token = None
+                st.info("Disconnected from Google Calendar")
+                st.rerun()
+
+    st.divider()
+
     st.header("📊 Quick Stats")
     st.metric("Total Tasks", len(st.session_state.tasks))
     
@@ -255,6 +312,48 @@ with st.sidebar:
 
 # ==================== BACKEND FUNCTIONS ====================
 # Replace these with your actual backend logic
+
+def convert_schedule_to_calendar_events(schedule) -> list[CalendarEvent]:
+    """
+    Convert UI schedule format to backend CalendarEvent objects.
+
+    Args:
+        schedule: Dictionary with 'events' list containing:
+                 - task_name, date, start_time, duration, type
+
+    Returns:
+        List of CalendarEvent objects ready for Google Calendar API
+    """
+    calendar_events = []
+
+    for event in schedule.get('events', []):
+        try:
+            # Parse date and time
+            event_date = event['date']  # Format: "YYYY-MM-DD"
+            start_time = event['start_time']  # Format: "HH:MM"
+
+            # Create datetime objects
+            start_datetime = datetime.strptime(
+                f"{event_date} {start_time}",
+                "%Y-%m-%d %H:%M"
+            )
+            end_datetime = start_datetime + timedelta(hours=event['duration'])
+
+            # Create CalendarEvent
+            calendar_event = CalendarEvent(
+                title=event['task_name'],
+                start=start_datetime,
+                end=end_datetime,
+                description=f"Subject: {event['type']}\nEstimated duration: {event['duration']} hours"
+            )
+            calendar_events.append(calendar_event)
+
+        except (KeyError, ValueError) as e:
+            st.warning(f"Skipping invalid event: {e}")
+            continue
+
+    return calendar_events
+
 
 def generate_schedule_with_llm(tasks, preferences):
     """
@@ -306,13 +405,40 @@ def generate_schedule_with_llm(tasks, preferences):
 
 def export_to_google_calendar(schedule):
     """
-    This is where you'll integrate Google Calendar API.
-    
+    Export schedule to Google Calendar using OAuth authentication.
+
     Args:
         schedule: Dictionary containing the schedule to export
     """
-    # TODO: Implement Google Calendar API integration
-    # 1. Authenticate with Google Calendar API
-    # 2. Create events for each scheduled session
-    # 3. Handle conflicts and errors
-    pass
+    # Check if user is authenticated
+    if st.session_state.google_token is None:
+        st.error("❌ Please connect Google Calendar in the sidebar first!")
+        return
+
+    # Convert schedule to CalendarEvent objects
+    try:
+        calendar_events = convert_schedule_to_calendar_events(schedule)
+
+        if not calendar_events:
+            st.warning("No events to export")
+            return
+
+        # Use CalendarService to create events
+        calendar_service = st.session_state.calendar_service
+        success, message = calendar_service.create_events(
+            events=calendar_events,
+            token=st.session_state.google_token
+        )
+
+        if success:
+            st.success(message)
+            st.info("💡 View your calendar at [Google Calendar](https://calendar.google.com)")
+        else:
+            st.error(message)
+            # If token expired, prompt to reconnect
+            if "expired" in message.lower() or "authentication" in message.lower():
+                st.session_state.google_token = None
+                st.info("Please reconnect Google Calendar in the sidebar and try again.")
+
+    except Exception as e:
+        st.error(f"Error exporting to calendar: {str(e)}")
