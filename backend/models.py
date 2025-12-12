@@ -64,12 +64,12 @@ class CalendarEvent:
 @dataclass
 class WorkingHours:
     """User's working/study hours."""
-    start_end: List[tuple[time, time]]
+    start: time
+    end: time
 
     def __post_init__(self):
-        for start, end in self.start_end:
-            if end <= start:
-                raise ValueError("Each start time must be before the corresponding end time")
+        if self.end <= self.start:
+            raise ValueError("End time must be after start time")
 
 
 @dataclass

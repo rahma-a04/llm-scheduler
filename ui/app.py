@@ -163,8 +163,8 @@ with tab1:
                         # Build preferences object
                         preferences = UserPreferences(
                             working_hours=WorkingHours(
-                                start_end=[(st.session_state.preferences['work_start'],
-                                           st.session_state.preferences['work_end'])]
+                                start=st.session_state.preferences['work_start'],
+                                end=st.session_state.preferences['work_end']
                             ),
                             max_daily_hours=st.session_state.preferences['max_daily_hours'],
                             buffer_minutes=st.session_state.preferences['buffer_minutes']

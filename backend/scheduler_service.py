@@ -367,13 +367,17 @@ class BaselineScheduler:
         """Schedule a single task greedily."""
         events = []
 
-        # Build busy schedule by day
+        # Build busy schedule by day (convert to naive datetimes for comparison)
         busy_by_day = {}
         for event in busy_events:
-            day = event.start.date()
+            # Strip timezone info to avoid comparison issues
+            start_naive = event.start.replace(tzinfo=None) if event.start.tzinfo else event.start
+            end_naive = event.end.replace(tzinfo=None) if event.end.tzinfo else event.end
+
+            day = start_naive.date()
             buffer = timedelta(minutes=preferences.buffer_minutes)
-            start_with_buffer = event.start - buffer
-            end_with_buffer = event.end + buffer
+            start_with_buffer = start_naive - buffer
+            end_with_buffer = end_naive + buffer
             busy_by_day.setdefault(day, []).append((start_with_buffer, end_with_buffer))
 
         # Calculate available days
@@ -395,25 +399,19 @@ class BaselineScheduler:
             if hours_remaining <= 0:
                 break
 
-            # Get free blocks for this day - iterate through all working windows
-            all_free_blocks = []
-            for start_time, end_time in preferences.working_hours.start_end:
-                work_start = datetime.combine(day, start_time)
-                work_end = datetime.combine(day, end_time)
-                free_blocks = self._get_free_blocks(
-                    work_start,
-                    work_end,
-                    busy_by_day.get(day, []),
-                    preferences
-                )
-                all_free_blocks.extend(free_blocks)
+            # Get free blocks for this day
+            work_start = datetime.combine(day, preferences.working_hours.start)
+            work_end = datetime.combine(day, preferences.working_hours.end)
 
-            # Sort free blocks by start time
-            all_free_blocks.sort(key=lambda x: x[0])
+            free_blocks = self._get_free_blocks(
+                work_start,
+                work_end,
+                busy_by_day.get(day, [])
+            )
 
             daily_target = min(hours_per_day, hours_remaining, preferences.max_daily_hours)
 
-            for start, end in all_free_blocks:
+            for start, end in free_blocks:
                 if daily_target <= 0:
                     break
 
@@ -441,8 +439,7 @@ class BaselineScheduler:
         self,
         work_start: datetime,
         work_end: datetime,
-        busy_times: List[tuple[datetime, datetime]],
-        preferences: UserPreferences
+        busy_times: List[tuple[datetime, datetime]]
     ) -> List[tuple[datetime, datetime]]:
         """Calculate free time blocks for a working window."""
         free_blocks = [(work_start, work_end)]
@@ -548,12 +545,6 @@ class LLMScheduler:
             """
         )
 
-        # Build working hours list
-        working_hours_list = [
-            {"start": start.isoformat(), "end": end.isoformat()}
-            for start, end in preferences.working_hours.start_end
-        ]
-
         payload = {
             "task": {
                 "name": task.name,
@@ -572,7 +563,10 @@ class LLMScheduler:
                 for e in existing_events
             ],
             "preferences": {
-                "working_hours": working_hours_list,
+                "working_hours": {
+                    "start": preferences.working_hours.start.isoformat(),
+                    "end": preferences.working_hours.end.isoformat()
+                },
                 "max_daily_hours": preferences.max_daily_hours,
                 "buffer_minutes": preferences.buffer_minutes
             }
