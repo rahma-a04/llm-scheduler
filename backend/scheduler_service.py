@@ -1,3 +1,5 @@
+"""Scheduling algorithms - baseline and LLM-based schedulers."""
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -8,9 +10,16 @@ from openai import OpenAI
 import json
 import re
 import os
+from typing import List
+
+from backend.models import Task, CalendarEvent, UserPreferences, Schedule
 
 # The scope defines what your app can access (here, read/write Calendar)
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
+
+
+# ==================== LEGACY STANDALONE FUNCTIONS ====================
+# Kept for backward compatibility with existing code
 
 def get_credentials():
     """Load or create valid Google API credentials."""
@@ -25,7 +34,7 @@ def get_credentials():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file("../credentials.json", SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for next time
         with open("token.json", "w") as token:
@@ -38,7 +47,7 @@ def fetch_calendar_events(creds: Credentials, calendar_id="primary"):
     service = build("calendar", "v3", credentials=creds)
     now = datetime.utcnow().isoformat() + "Z"
     one_week_later = (datetime.utcnow() + timedelta(days=7)).isoformat() + "Z"
-    
+
     events_result = service.events().list(
         calendarId=calendar_id,
         timeMin=now,
@@ -46,7 +55,7 @@ def fetch_calendar_events(creds: Credentials, calendar_id="primary"):
         singleEvents=True,
         orderBy="startTime"
     ).execute()
-    
+
     events = events_result.get("items", [])
     schedule = []
     for event in events:
@@ -68,7 +77,7 @@ def build_chatgpt_payload(user_info, schedule, new_task):
 
 def call_chatgpt_scheduler(payload, openai_api_key):
     """Send scheduling data to ChatGPT and return the new events."""
-    
+
     # Create the OpenAI client with the provided key
     client = OpenAI(api_key=openai_api_key)
 
@@ -77,9 +86,9 @@ def call_chatgpt_scheduler(payload, openai_api_key):
         You are an intelligent scheduling assistant designed to create an optimal study-oriented schedule.
 
         You are given:
-        1) The user’s current Google Calendar events
+        1) The user's current Google Calendar events
         2) One or more new tasks that may be distributable across multiple time blocks
-        3) The user’s stated preferences (working hours, weekend preferences, and any notes in the task description)
+        3) The user's stated preferences (working hours, weekend preferences, and any notes in the task description)
 
         Your objective is to generate an optimal schedule by returning ONLY a JSON array of **new events** to be added to Google Calendar.
 
@@ -90,7 +99,7 @@ def call_chatgpt_scheduler(payload, openai_api_key):
         GENERAL RULES:
         - Do NOT modify or delete existing calendar events.
         - New events MUST NOT overlap with existing events or with each other.
-        - All events should respect the user’s preferred working hours whenever possible.
+        - All events should respect the user's preferred working hours whenever possible.
         - This system is primarily for STUDENTS, so do NOT assume a strict 9–5 work schedule.
         - Prefer spreading work to avoid burnout unless the task logically requires focus continuity.
         - Make sure the tasks are not assigned to times that has already past, make sure they are assigned to future times/days.
@@ -128,10 +137,10 @@ def call_chatgpt_scheduler(payload, openai_api_key):
     Here is user's current calendar and the new task to be scheduled:
     {json.dumps(payload, indent=2)}
 
-    Please return a JSON array of **new events** to be added to the Google Calendar and only the JSON array 
+    Please return a JSON array of **new events** to be added to the Google Calendar and only the JSON array
     with no additional text beyond it, as it will be parsed directly to Google Calendar.
 
-    Each event should include: 
+    Each event should include:
     - title
     - start (ISO 8601)
     - end (ISO 8601)
@@ -139,16 +148,16 @@ def call_chatgpt_scheduler(payload, openai_api_key):
 
     Requirements you must follow when generating the schedule:
 
-    • Ensure all tasks are distributed intelligently, splitting them when needed and placing them in the best free time slots relative to the user’s schedule.
+    • Ensure all tasks are distributed intelligently, splitting them when needed and placing them in the best free time slots relative to the user's schedule.
 
-    • If the user has indicated they do NOT want to work on weekends, do not schedule any weekend events.  
+    • If the user has indicated they do NOT want to work on weekends, do not schedule any weekend events.
     If the user has not expressed a preference against weekends, weekends may and should be used when helpful.
 
     • Use reasoning to determine whether to spread the task over broader days or to place sessions on consecutive days.
 
     • If possibly prioritize assigning portions of task over multiple days rather than multiple portions in only one day.
 
-    • Because this system is for students, do NOT assume a 9–5 schedule. Use the user’s working-hour preferences directly.
+    • Because this system is for students, do NOT assume a 9–5 schedule. Use the user's working-hour preferences directly.
 
     • Tasks should only be placed outside working-hour preferences if there is absolutely no way to fit all required time within preferred hours.
 
@@ -319,3 +328,331 @@ def baseline_schedule(existing_events, new_task, user_info, buffer_minutes=15):
 
     return new_events
 
+
+# ==================== NEW CLASS-BASED ARCHITECTURE ====================
+
+class BaselineScheduler:
+    """Greedy algorithm scheduler - deterministic baseline."""
+
+    def generate_schedule(
+        self,
+        tasks: List[Task],
+        existing_events: List[CalendarEvent],
+        preferences: UserPreferences
+    ) -> Schedule:
+        """Generate schedule using greedy algorithm."""
+        # Sort tasks by priority (HIGH first) and deadline
+        sorted_tasks = sorted(
+            tasks,
+            key=lambda t: (t.priority.value, t.deadline)
+        )
+
+        all_events = []
+        for task in sorted_tasks:
+            events = self._schedule_task(
+                task,
+                existing_events + all_events,
+                preferences
+            )
+            all_events.extend(events)
+
+        return Schedule(events=all_events)
+
+    def _schedule_task(
+        self,
+        task: Task,
+        busy_events: List[CalendarEvent],
+        preferences: UserPreferences
+    ) -> List[CalendarEvent]:
+        """Schedule a single task greedily."""
+        events = []
+
+        # Build busy schedule by day
+        busy_by_day = {}
+        for event in busy_events:
+            day = event.start.date()
+            buffer = timedelta(minutes=preferences.buffer_minutes)
+            start_with_buffer = event.start - buffer
+            end_with_buffer = event.end + buffer
+            busy_by_day.setdefault(day, []).append((start_with_buffer, end_with_buffer))
+
+        # Calculate available days
+        current_date = datetime.now().date()
+        deadline_date = task.deadline.date()
+        days = []
+        while current_date <= deadline_date:
+            days.append(current_date)
+            current_date += timedelta(days=1)
+
+        if not days:
+            return events
+
+        # Distribute hours across days
+        hours_remaining = task.weighted_hours
+        hours_per_day = hours_remaining / len(days)
+
+        for day in days:
+            if hours_remaining <= 0:
+                break
+
+            # Get free blocks for this day - iterate through all working windows
+            all_free_blocks = []
+            for start_time, end_time in preferences.working_hours.start_end:
+                work_start = datetime.combine(day, start_time)
+                work_end = datetime.combine(day, end_time)
+                free_blocks = self._get_free_blocks(
+                    work_start,
+                    work_end,
+                    busy_by_day.get(day, []),
+                    preferences
+                )
+                all_free_blocks.extend(free_blocks)
+
+            # Sort free blocks by start time
+            all_free_blocks.sort(key=lambda x: x[0])
+
+            daily_target = min(hours_per_day, hours_remaining, preferences.max_daily_hours)
+
+            for start, end in all_free_blocks:
+                if daily_target <= 0:
+                    break
+
+                block_hours = (end - start).total_seconds() / 3600
+                duration = min(block_hours, daily_target)
+
+                if duration >= 0.5:  # Minimum 30 minutes
+                    event_end = start + timedelta(hours=duration)
+                    events.append(CalendarEvent(
+                        title=task.name,
+                        start=start,
+                        end=event_end,
+                        description=f"{task.subject} (Priority: {task.priority.value})"
+                    ))
+
+                    daily_target -= duration
+                    hours_remaining -= duration
+
+                    if not task.can_be_split:
+                        break
+
+        return events
+
+    def _get_free_blocks(
+        self,
+        work_start: datetime,
+        work_end: datetime,
+        busy_times: List[tuple[datetime, datetime]],
+        preferences: UserPreferences
+    ) -> List[tuple[datetime, datetime]]:
+        """Calculate free time blocks for a working window."""
+        free_blocks = [(work_start, work_end)]
+
+        for busy_start, busy_end in sorted(busy_times):
+            temp = []
+            for fs, fe in free_blocks:
+                if busy_end <= fs or busy_start >= fe:
+                    temp.append((fs, fe))
+                else:
+                    if fs < busy_start:
+                        temp.append((fs, busy_start))
+                    if busy_end < fe:
+                        temp.append((busy_end, fe))
+            free_blocks = temp
+
+        return free_blocks
+
+
+class LLMScheduler:
+    """LLM-based scheduler using OpenAI."""
+
+    def __init__(self, api_key: str, model: str = "gpt-4o"):
+        self.client = OpenAI(api_key=api_key)
+        self.model = model
+
+    def generate_schedule(
+        self,
+        tasks: List[Task],
+        existing_events: List[CalendarEvent],
+        preferences: UserPreferences
+    ) -> Schedule:
+        """Generate schedule using LLM."""
+        all_events = []
+
+        for task in tasks:
+            events = self._schedule_task_with_llm(
+                task,
+                existing_events + all_events,
+                preferences
+            )
+            all_events.extend(events)
+
+        return Schedule(events=all_events)
+
+    def _schedule_task_with_llm(
+        self,
+        task: Task,
+        existing_events: List[CalendarEvent],
+        preferences: UserPreferences
+    ) -> List[CalendarEvent]:
+        """Use LLM to schedule a single task."""
+
+        system_prompt = (
+            f"""
+            You are an intelligent scheduling assistant designed to create an optimal study-oriented schedule.
+
+            You are given:
+            1) The user's current Google Calendar events
+            2) One or more new tasks that may be distributable across multiple time blocks
+            3) The user's stated preferences (working hours, weekend preferences, and any notes in the task description)
+
+            Your objective is to generate an optimal schedule by returning ONLY a JSON array of **new events** to be added to Google Calendar.
+
+            ━━━━━━━━━━━━━━━━━━━━━━
+            📌 Scheduling Rules & Logic
+            ━━━━━━━━━━━━━━━━━━━━━━
+
+            GENERAL RULES:
+            - Do NOT modify or delete existing calendar events.
+            - New events MUST NOT overlap with existing events or with each other.
+            - All events should respect the user's preferred working hours whenever possible.
+            - This system is primarily for STUDENTS, so do NOT assume a strict 9–5 work schedule.
+            - Prefer spreading work to avoid burnout unless the task logically requires focus continuity.
+            - Make sure the tasks are not assigned to times that has already past, make sure they are assigned to future times/days.
+
+
+            TASK DISTRIBUTION:
+            - If a task is distributable, intelligently split it into multiple sessions.
+            - For instance, if a task takes 8 hours and is due in 4 days, distribute it evenly 2 hours per day for the next for days if possible.
+            - Decide whether sessions should be:
+            • spread evenly across multiple days, OR
+            • grouped closer together
+            based on task type (e.g., exam prep vs short assignment), urgency, and workload.
+            - Balance consistency and rest (avoid scheduling too many long sessions on one day).
+            - If the scehule seems pretty full for a specific day with prior tasks and you have more availibility withing the next days, try to assign block for next days rather than the day that filled up with stuff.
+
+            WEEKEND LOGIC:
+            - If the user explicitly states they do NOT want to work on weekends (in preferences or task description), do NOT schedule any tasks on weekends.
+            - If the user has NOT specified a restriction on weekends, you MAY use weekends as valid scheduling days if it improves task distribution.
+
+            WORKING HOURS OVERRIDES:
+            - ONLY schedule tasks outside preferred working hours if:
+            • there is absolutely no feasible way to place all required sessions within preferences.
+            - If you must schedule outside preferred hours:
+            • minimize how far outside those hours the event occurs.
+            • prefer earlier evenings over late nights.
+
+            TIME BLOCK STRATEGY:
+            - Prefer realistic study blocks (e.g., 30–120 minutes).
+            - Include short breaks implicitly by avoiding back-to-back long blocks.
+            - Do not overschedule a single day unless unavoidable.
+            """
+        )
+
+        # Build working hours list
+        working_hours_list = [
+            {"start": start.isoformat(), "end": end.isoformat()}
+            for start, end in preferences.working_hours.start_end
+        ]
+
+        payload = {
+            "task": {
+                "name": task.name,
+                "subject": task.subject,
+                "estimated_hours": task.estimated_hours,
+                "deadline": task.deadline.isoformat(),
+                "priority": task.priority.value,
+                "can_be_split": task.can_be_split
+            },
+            "existing_events": [
+                {
+                    "title": e.title,
+                    "start": e.start.isoformat(),
+                    "end": e.end.isoformat()
+                }
+                for e in existing_events
+            ],
+            "preferences": {
+                "working_hours": working_hours_list,
+                "max_daily_hours": preferences.max_daily_hours,
+                "buffer_minutes": preferences.buffer_minutes
+            }
+        }
+
+        user_prompt = f"""
+        Here is user's current calendar and the new task to be scheduled:
+        {json.dumps(payload, indent=2)}
+
+        Please return a JSON array of **new events** to be added to the Google Calendar and only the JSON array
+        with no additional text beyond it, as it will be parsed directly to Google Calendar.
+
+        Each event should include:
+        - title
+        - start (ISO 8601)
+        - end (ISO 8601)
+        - description
+
+        Requirements you must follow when generating the schedule:
+
+        • Ensure all tasks are distributed intelligently, splitting them when needed and placing them in the best free time slots relative to the user's schedule.
+
+        • If the user has indicated they do NOT want to work on weekends, do not schedule any weekend events.
+        If the user has not expressed a preference against weekends, weekends may and should be used when helpful.
+
+        • Use reasoning to determine whether to spread the task over broader days or to place sessions on consecutive days.
+
+        • If possibly prioritize assigning portions of task over multiple days rather than multiple portions in only one day.
+
+        • Because this system is for students, do NOT assume a 9–5 schedule. Use the user's working-hour preferences directly.
+
+        • Tasks should only be placed outside working-hour preferences if there is absolutely no way to fit all required time within preferred hours.
+
+        • Ensure no event overlaps with existing calendar events or other newly created events.
+
+        • Make sure the tasks are not assigned to times that has already past, make sure they are assigned to future times/days.
+
+        • Output must be ONLY the JSON array of new events with valid ISO timestamps.
+        """
+
+        # Make the API call
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.4
+        )
+
+        result_text = response.choices[0].message.content.strip()
+
+        # Clean markdown formatting
+        cleaned = re.sub(
+            r"^```(?:json)?|```$",
+            "",
+            result_text.strip(),
+            flags=re.MULTILINE
+        ).strip()
+
+        try:
+            events_data = json.loads(cleaned)
+            return self._parse_events(events_data)
+        except json.JSONDecodeError as e:
+            print(f"JSON parsing failed: {e}")
+            print(f"Raw cleaned text: {cleaned}")
+            return []
+
+    def _parse_events(self, events_data: List[dict]) -> List[CalendarEvent]:
+        """Parse JSON events into CalendarEvent objects."""
+        events = []
+        for data in events_data:
+            try:
+                events.append(CalendarEvent(
+                    title=data.get("title", ""),
+                    start=datetime.fromisoformat(data["start"]),
+                    end=datetime.fromisoformat(data["end"]),
+                    description=data.get("description", "")
+                ))
+            except (KeyError, ValueError) as e:
+                print(f"Error parsing event: {e}")
+                continue
+        return events

@@ -1,51 +1,51 @@
+"""Main Streamlit application for AI Task Planner."""
+
 import streamlit as st
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 import json
 import os
 import sys
-import time
-from dotenv import load_dotenv
 
-# --------- PATH SETUP: make sure project root is on sys.path ----------
+# Path setup
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# --------- BACKEND IMPORTS ----------
-# Adjust these imports depending on how your backend package is structured.
-# If you instead have them in backend.scheduler_service, change accordingly.
-from backend import (
-    get_credentials,
-    fetch_calendar_events,
-    build_chatgpt_payload,
-    call_chatgpt_scheduler,
-    push_events_to_google_calendar,
-)
+from backend.models import Priority, WorkingHours, UserPreferences, CalendarEvent
+from backend.calendar_service import CalendarService
+from backend.scheduler_service import LLMScheduler, BaselineScheduler
+from backend.task_manager import TaskManager
+from backend.config import get_settings
 
 # ==================== SETUP ====================
 st.set_page_config(page_title="AI Task Planner", page_icon="📅", layout="wide")
 
-load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# Initialize settings
+settings = get_settings()
 
 # Initialize session state
 if "tasks" not in st.session_state:
     st.session_state.tasks = []
 if "schedule" not in st.session_state:
-    # will store whatever scheduled_events the backend returns (likely a list of dicts)
     st.session_state.schedule = None
 if "preferences" not in st.session_state:
     st.session_state.preferences = {
-        'study_windows': '',
-        'max_daily_hours': 6,
-        'break_pattern': '',
-        'additional_notes': ''
+        'work_start': time(9, 0),
+        'work_end': time(22, 0),
+        'max_daily_hours': settings.default_max_daily_hours,
+        'buffer_minutes': settings.default_buffer_minutes
     }
 if 'google_token' not in st.session_state:
     st.session_state.google_token = None
 if 'calendar_service' not in st.session_state:
-    st.session_state.calendar_service = CalendarService()
+    st.session_state.calendar_service = CalendarService(settings.google_credentials_path)
+if 'task_manager' not in st.session_state:
+    st.session_state.task_manager = TaskManager()
+
+# Get services
+calendar_service = st.session_state.calendar_service
+task_manager = st.session_state.task_manager
 
 # ==================== UI STYLE ====================
 st.markdown(
@@ -99,21 +99,19 @@ with tab1:
         priority = st.selectbox("Priority", ["Low", "Medium", "High"], index=1, key="priority")
 
     with col2:
-        subject = st.text_input("Subject (optional)", key="subject")
+        subject = st.text_input("Subject", value="General", key="subject")
         deadline = st.date_input("Deadline *", min_value=datetime.today(), key="deadline")
-        st.write("")  # spacer
 
     if st.button("➕ Add Task", type="primary"):
         if task_name and estimated_hours and deadline:
-            new_task = {
-                "id": len(st.session_state.tasks) + 1,
-                "name": task_name,
-                "subject": subject if subject else "General",
-                "estimated_hours": estimated_hours,
-                "deadline": deadline.strftime("%Y-%m-%d"),
-                "priority": priority,
-            }
-            st.session_state.tasks.append(new_task)
+            # Add task using TaskManager
+            task = task_manager.add_task(
+                name=task_name,
+                subject=subject,
+                estimated_hours=estimated_hours,
+                deadline=datetime.combine(deadline, time(23, 59)),
+                priority=Priority[priority.upper()]
+            )
             st.success(f"✅ Added: {task_name}")
             st.rerun()
         else:
@@ -122,126 +120,133 @@ with tab1:
     st.divider()
 
     # Display tasks
-    st.header(f"Your Tasks ({len(st.session_state.tasks)})")
+    st.header(f"Your Tasks ({len(task_manager.get_all_tasks())})")
 
-    if len(st.session_state.tasks) == 0:
+    tasks = task_manager.get_all_tasks()
+
+    if not tasks:
         st.info("📋 No tasks added yet. Add your first task above!")
     else:
-        for idx, task in enumerate(st.session_state.tasks):
+        for idx, task in enumerate(tasks):
             col1, col2 = st.columns([5, 1])
 
             with col1:
-                priority_emoji = {"Low": "🟢", "Medium": "🟡", "High": "🔴"}
+                priority_emoji = {"low": "🟢", "medium": "🟡", "high": "🔴"}
                 st.markdown(
                     f"""
                     <div class="task-card">
-                        <h4>{priority_emoji[task['priority']]} {task['name']}</h4>
-                        <p>📚 {task['subject']} | ⏱️ {task['estimated_hours']}h | 📅 Due: {task['deadline']}</p>
+                        <h4>{priority_emoji[task.priority.value]} {task.name}</h4>
+                        <p>📚 {task.subject} | ⏱️ {task.estimated_hours}h | 📅 Due: {task.deadline.strftime("%Y-%m-%d")}</p>
                     </div>
                 """,
                     unsafe_allow_html=True,
                 )
 
             with col2:
-                if st.button("🗑️", key=f"delete_{idx}"):
-                    st.session_state.tasks.pop(idx)
+                if st.button("🗑️", key=f"delete_{task.id}"):
+                    task_manager.remove_task(task.id)
                     st.rerun()
 
         st.divider()
 
-        # Generate schedule button using BACKEND + LLM logic
-        if st.button("🚀 Generate AI Schedule", type="primary", use_container_width=True):
-            if not OPENAI_API_KEY:
+        # Generate schedule button using NEW class-based architecture
+        button_text = "🚀 Generate AI Schedule" if settings.default_scheduler == "llm" else "🚀 Generate Schedule"
+
+        if st.button(button_text, type="primary", use_container_width=True):
+            # Only check API key if using LLM scheduler
+            if settings.default_scheduler == "llm" and not settings.openai_api_key:
                 st.error("❌ OPENAI_API_KEY is not set. Please add it to your .env file.")
             else:
-                with st.spinner("🤖 AI is creating your optimal schedule..."):
+                spinner_text = "🤖 AI is creating your optimal schedule..." if settings.default_scheduler == "llm" else "📊 Creating your schedule..."
+                with st.spinner(spinner_text):
                     try:
-                        # 1. Get Google credentials (your backend handles this)
-                        creds = get_credentials()
+                        # Build preferences object
+                        preferences = UserPreferences(
+                            working_hours=WorkingHours(
+                                start_end=[(st.session_state.preferences['work_start'],
+                                           st.session_state.preferences['work_end'])]
+                            ),
+                            max_daily_hours=st.session_state.preferences['max_daily_hours'],
+                            buffer_minutes=st.session_state.preferences['buffer_minutes']
+                        )
 
-                        # 2. Fetch existing calendar events
-                        current_schedule = fetch_calendar_events(creds)
-
-                        # 3. Build user info from preferences
-                        user_info = {
-                            "preferred_hours": st.session_state.preferences["study_windows"],
-                            "max_daily_hours": st.session_state.preferences["max_daily_hours"],
-                            "break_pattern": st.session_state.preferences["break_pattern"],
-                            "notes": st.session_state.preferences["additional_notes"],
-                        }
-
-                        # 4. Build task list for backend / LLM
-                        llm_tasks = []
-                        for task in st.session_state.tasks:
-                            llm_tasks.append(
-                                {
-                                    "title": task["name"],
-                                    "estimated_duration_hours": task["estimated_hours"],
-                                    "deadline": task["deadline"],
-                                    "priority": task["priority"],
-                                    "subject": task["subject"],
-                                    "can_be_split": True,
-                                }
+                        # Fetch existing calendar events if connected
+                        existing_events = []
+                        if st.session_state.google_token:
+                            start_date = datetime.now()
+                            end_date = start_date + timedelta(days=7)
+                            events_result, error = calendar_service.fetch_events(
+                                start_date,
+                                end_date,
+                                st.session_state.google_token
                             )
+                            if events_result:
+                                existing_events = events_result
+                            elif error:
+                                st.warning(f"Could not fetch calendar events: {error}")
 
-                        # 5. Build payload and call LLM scheduler
-                        payload = build_chatgpt_payload(user_info, current_schedule, llm_tasks)
-                        scheduled_events = call_chatgpt_scheduler(payload, OPENAI_API_KEY)
+                        # Initialize scheduler based on config settings
+                        if settings.default_scheduler == "baseline":
+                            scheduler = BaselineScheduler()
+                            scheduler_name = "Baseline (Greedy)"
+                        else:
+                            scheduler = LLMScheduler(settings.openai_api_key, settings.llm_model)
+                            scheduler_name = "AI (LLM)"
+
+                        # Generate schedule using new class-based API
+                        schedule = scheduler.generate_schedule(
+                            task_manager.get_all_tasks(),
+                            existing_events,
+                            preferences
+                        )
 
                         # Save schedule in session
-                        st.session_state.schedule = scheduled_events
+                        st.session_state.schedule = schedule
 
-                        if scheduled_events:
-                            # 6. Push events to Google Calendar
-                            push_events_to_google_calendar(creds, scheduled_events)
-                            st.success("✅ Schedule generated and synced to Google Calendar!")
+                        if schedule.events:
+                            st.success(f"✅ Schedule generated with {len(schedule.events)} events using {scheduler_name} scheduler!")
                             st.balloons()
                         else:
-                            st.error("⚠️ AI returned no events. Please try again.")
+                            st.warning("⚠️ Scheduler returned no events. Please try again.")
 
                     except Exception as e:
                         st.error(f"❌ Error while generating schedule: {e}")
+                        import traceback
+                        st.code(traceback.format_exc())
 
 # ==================== TAB 2: PREFERENCES ====================
 with tab2:
     st.header("⚙️ Study Preferences")
     st.markdown("*Configure your study habits and preferences*")
 
-    study_windows = st.text_area(
-        "Preferred Study Windows",
-        value=st.session_state.preferences["study_windows"],
-        placeholder="e.g., Weekday afternoons 2–6 PM, Weekend mornings 9–12",
-        help="Describe when you prefer to study",
-    )
+    col1, col2 = st.columns(2)
+    with col1:
+        work_start = st.time_input("Work Start Time", value=st.session_state.preferences['work_start'])
+    with col2:
+        work_end = st.time_input("Work End Time", value=st.session_state.preferences['work_end'])
 
     max_daily_hours = st.slider(
         "Maximum Daily Study Hours",
         min_value=1,
         max_value=12,
-        value=st.session_state.preferences["max_daily_hours"],
-        help="Maximum hours you want to study per day",
+        value=st.session_state.preferences['max_daily_hours'],
+        help="Maximum hours you want to study per day"
     )
 
-    break_pattern = st.text_input(
-        "Break Pattern",
-        value=st.session_state.preferences["break_pattern"],
-        placeholder="e.g., 15 min break every hour, 30 min lunch at 12 PM",
-        help="Describe your preferred break schedule",
-    )
-
-    additional_notes = st.text_area(
-        "Additional Notes",
-        value=st.session_state.preferences["additional_notes"],
-        placeholder="Any other preferences, constraints, or information...",
-        help="Add any other relevant information for the AI",
+    buffer_minutes = st.number_input(
+        "Buffer Time (minutes)",
+        min_value=0,
+        max_value=60,
+        value=st.session_state.preferences['buffer_minutes'],
+        help="Time buffer between events"
     )
 
     if st.button("💾 Save Preferences", type="primary"):
         st.session_state.preferences = {
-            "study_windows": study_windows,
-            "max_daily_hours": max_daily_hours,
-            "break_pattern": break_pattern,
-            "additional_notes": additional_notes,
+            'work_start': work_start,
+            'work_end': work_end,
+            'max_daily_hours': max_daily_hours,
+            'buffer_minutes': buffer_minutes
         }
         st.success("✅ Preferences saved!")
 
@@ -258,44 +263,38 @@ with tab3:
     if not schedule:
         st.info("📋 No schedule generated yet. Add tasks and click 'Generate AI Schedule' to get started!")
     else:
-        # If your backend returns a list of events with keys 'title', 'start', 'end', 'description'
-        # (as in your second snippet), we display them here.
-        # Adjust keys if your backend uses slightly different names.
-        st.subheader("📋 Scheduled Study Sessions")
+        # Display schedule summary
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Total Events", len(schedule.events))
+        with col2:
+            st.metric("Total Tasks", schedule.total_tasks)
+        with col3:
+            st.metric("Total Hours", f"{schedule.total_hours:.1f}h")
 
-        # Optional: simple summary
-        try:
-            total_events = len(schedule)
-            unique_titles = len({e.get("title") for e in schedule})
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric("Total Events", total_events)
-            with col2:
-                st.metric("Distinct Tasks", unique_titles)
-        except Exception:
-            pass
+        # Check for conflicts
+        if schedule.has_conflicts():
+            st.warning("⚠️ Warning: Schedule has conflicting events!")
 
         st.divider()
+        st.subheader("📋 Scheduled Study Sessions")
 
-        for event in schedule:
-            title = event.get("title", "Untitled")
-            start = event.get("start", "")
-            end = event.get("end", "")
-            desc = event.get("description", "")
-
+        for event in schedule.events:
             st.markdown(
                 f"""
                 <div class="schedule-card">
-                    <h4>{title}</h4>
-                    <p>🕒 {start} → {end}</p>
-                    <p>📝 {desc}</p>
+                    <h4>{event.title}</h4>
+                    <p>📅 {event.start.strftime("%Y-%m-%d")} |
+                    ⏰ {event.start.strftime("%H:%M")} - {event.end.strftime("%H:%M")} |
+                    ⏱️ {event.duration_hours:.1f}h</p>
+                    <p>📝 {event.description}</p>
                 </div>
             """,
                 unsafe_allow_html=True,
             )
 
         st.divider()
-        
+
         # Export options
         col1, col2 = st.columns(2)
         with col1:
@@ -314,10 +313,36 @@ with tab3:
                 disabled=export_button_disabled
             ):
                 with st.spinner("Exporting to Google Calendar..."):
-                    export_to_google_calendar(schedule)
+                    success, message = calendar_service.create_events(
+                        events=schedule.events,
+                        token=st.session_state.google_token
+                    )
+                    if success:
+                        st.success(message)
+                        st.info("💡 View your calendar at [Google Calendar](https://calendar.google.com)")
+                    else:
+                        st.error(message)
+                        if "expired" in message.lower() or "authentication" in message.lower():
+                            st.session_state.google_token = None
+                            st.info("Please reconnect Google Calendar in the sidebar and try again.")
 
         with col2:
-            json_str = json.dumps(schedule, indent=2)
+            # Convert schedule to JSON-serializable format
+            schedule_dict = {
+                "events": [
+                    {
+                        "title": event.title,
+                        "start": event.start.isoformat(),
+                        "end": event.end.isoformat(),
+                        "description": event.description
+                    }
+                    for event in schedule.events
+                ],
+                "total_hours": schedule.total_hours,
+                "total_tasks": schedule.total_tasks,
+                "created_at": schedule.created_at.isoformat()
+            }
+            json_str = json.dumps(schedule_dict, indent=2)
             st.download_button(
                 label="📄 Download as JSON",
                 data=json_str,
@@ -331,7 +356,6 @@ with st.sidebar:
     # Google Calendar OAuth Section
     st.header("🔐 Google Calendar")
 
-    calendar_service = st.session_state.calendar_service
     oauth_component = calendar_service.get_oauth_component()
 
     if st.session_state.google_token is None:
@@ -364,160 +388,28 @@ with st.sidebar:
     st.divider()
 
     st.header("📊 Quick Stats")
-    st.metric("Total Tasks", len(st.session_state.tasks))
+    st.metric("Total Tasks", len(task_manager.get_all_tasks()))
 
-    if st.session_state.tasks:
-        total_hours = sum(task["estimated_hours"] for task in st.session_state.tasks)
-        st.metric("Total Work Hours", f"{total_hours}h")
+    if task_manager.get_all_tasks():
+        st.metric("Total Work Hours", f"{task_manager.total_hours:.1f}h")
 
-        next_deadline = min(task["deadline"] for task in st.session_state.tasks)
-        st.metric("Next Deadline", next_deadline)
+        next_deadline = min(task.deadline for task in task_manager.get_all_tasks())
+        st.metric("Next Deadline", next_deadline.strftime("%Y-%m-%d"))
 
     st.divider()
 
     if st.button("🔄 Reset All", use_container_width=True):
-        st.session_state.tasks = []
+        task_manager.clear_all_tasks()
         st.session_state.schedule = None
         st.rerun()
 
     st.divider()
     st.markdown("### 📖 About")
     st.markdown("""
-    This AI Task Planner uses Large Language Models to create 
-    optimized study schedules based on your tasks, deadlines, 
+    This AI Task Planner uses Large Language Models to create
+    optimized study schedules based on your tasks, deadlines,
     and personal preferences.
+
+    **Architecture:** Clean, modular design with separate services
+    for task management, scheduling, and calendar integration.
     """)
-
-
-# ==================== BACKEND FUNCTIONS ====================
-# Replace these with your actual backend logic
-
-def convert_schedule_to_calendar_events(schedule) -> list[CalendarEvent]:
-    """
-    Convert UI schedule format to backend CalendarEvent objects.
-
-    Args:
-        schedule: Dictionary with 'events' list containing:
-                 - task_name, date, start_time, duration, type
-
-    Returns:
-        List of CalendarEvent objects ready for Google Calendar API
-    """
-    calendar_events = []
-
-    for event in schedule.get('events', []):
-        try:
-            # Parse date and time
-            event_date = event['date']  # Format: "YYYY-MM-DD"
-            start_time = event['start_time']  # Format: "HH:MM"
-
-            # Create datetime objects
-            start_datetime = datetime.strptime(
-                f"{event_date} {start_time}",
-                "%Y-%m-%d %H:%M"
-            )
-            end_datetime = start_datetime + timedelta(hours=event['duration'])
-
-            # Create CalendarEvent
-            calendar_event = CalendarEvent(
-                title=event['task_name'],
-                start=start_datetime,
-                end=end_datetime,
-                description=f"Subject: {event['type']}\nEstimated duration: {event['duration']} hours"
-            )
-            calendar_events.append(calendar_event)
-
-        except (KeyError, ValueError) as e:
-            st.warning(f"Skipping invalid event: {e}")
-            continue
-
-    return calendar_events
-
-
-def generate_schedule_with_llm(tasks, preferences):
-    """
-    This is where you'll integrate your LLM API call and scheduling logic.
-    
-    Args:
-        tasks: List of task dictionaries
-        preferences: Dictionary of user preferences
-    
-    Returns:
-        Dictionary containing the generated schedule
-    """
-    # TODO: Replace with your actual LLM API call
-    # Example structure:
-    # 1. Build prompt from tasks and preferences
-    # 2. Call OpenAI API
-    # 3. Parse LLM response
-    # 4. Validate schedule
-    # 5. Return structured schedule
-    
-    # Mock implementation for demonstration
-    import time
-    time.sleep(2)  # Simulate API call
-    
-    events = []
-    for task in tasks:
-        sessions = int(task['estimated_hours'] / 2) + 1
-        deadline_date = datetime.strptime(task['deadline'], "%Y-%m-%d")
-        
-        for i in range(sessions):
-            session_date = deadline_date - timedelta(days=(sessions - i))
-            events.append({
-                'task_name': task['name'],
-                'date': session_date.strftime("%Y-%m-%d"),
-                'start_time': '14:00',
-                'duration': min(2, task['estimated_hours'] - i * 2),
-                'type': task['subject']
-            })
-    
-    return {
-        'events': events,
-        'summary': {
-            'total_tasks': len(tasks),
-            'total_hours': sum(t['estimated_hours'] for t in tasks),
-            'days_used': len(set(e['date'] for e in events))
-        }
-    }
-
-
-def export_to_google_calendar(schedule):
-    """
-    Export schedule to Google Calendar using OAuth authentication.
-
-    Args:
-        schedule: Dictionary containing the schedule to export
-    """
-    # Check if user is authenticated
-    if st.session_state.google_token is None:
-        st.error("❌ Please connect Google Calendar in the sidebar first!")
-        return
-
-    # Convert schedule to CalendarEvent objects
-    try:
-        calendar_events = convert_schedule_to_calendar_events(schedule)
-
-        if not calendar_events:
-            st.warning("No events to export")
-            return
-
-        # Use CalendarService to create events
-        calendar_service = st.session_state.calendar_service
-        success, message = calendar_service.create_events(
-            events=calendar_events,
-            token=st.session_state.google_token
-        )
-
-        if success:
-            st.success(message)
-            st.info("💡 View your calendar at [Google Calendar](https://calendar.google.com)")
-        else:
-            st.error(message)
-            # If token expired, prompt to reconnect
-            if "expired" in message.lower() or "authentication" in message.lower():
-                st.session_state.google_token = None
-                st.info("Please reconnect Google Calendar in the sidebar and try again.")
-
-    except Exception as e:
-        st.error(f"Error exporting to calendar: {str(e)}")

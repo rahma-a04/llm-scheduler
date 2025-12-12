@@ -5,9 +5,9 @@ from typing import List, Optional
 
 
 class Priority(Enum):
-    LOW = 0
-    MEDIUM = 1
-    HIGH = 2
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
 
 
 @dataclass
