@@ -499,13 +499,13 @@ class LLMScheduler:
         """Use LLM to schedule a single task."""
 
         system_prompt = (
-            f"""
+            """
             You are an intelligent scheduling assistant designed to create an optimal study-oriented schedule.
 
             You are given:
-            1) The user's current Google Calendar events
+            1) The user's current Google Calendar events (in the "existing_events" array)
             2) One or more new tasks that may be distributable across multiple time blocks
-            3) The user's stated preferences (working hours, weekend preferences, and any notes in the task description)
+            3) The user's stated preferences (working hours, weekend preferences, and study habits)
 
             Your objective is to generate an optimal schedule by returning ONLY a JSON array of **new events** to be added to Google Calendar.
 
@@ -515,12 +515,14 @@ class LLMScheduler:
 
             GENERAL RULES:
             - Do NOT modify or delete existing calendar events.
-            - New events MUST NOT overlap with existing events or with each other.
+            - CRITICAL CONSTRAINT: Do NOT overlap new events with existing events or with each other. All events must be scheduled in SEPARATE time blocks.
             - All events should respect the user's preferred working hours whenever possible.
             - This system is primarily for STUDENTS, so do NOT assume a strict 9–5 work schedule.
             - Prefer spreading work to avoid burnout unless the task logically requires focus continuity.
             - Make sure the tasks are not assigned to times that has already past, make sure they are assigned to future times/days.
-
+            - If the preferences object contains 'study_habits' with user-provided information, carefully consider these habits when scheduling.
+              For example, if the user says "I focus best in the mornings", prioritize scheduling important tasks in morning hours.
+              If they mention "I prefer shorter study sessions", favor splitting tasks into smaller blocks.
 
             TASK DISTRIBUTION:
             - If a task is distributable, intelligently split it into multiple sessions.
@@ -551,6 +553,7 @@ class LLMScheduler:
         )
 
         payload = {
+            "current_datetime": datetime.now().isoformat(),
             "task": {
                 "name": task.name,
                 "subject": task.subject,
@@ -573,13 +576,17 @@ class LLMScheduler:
                     "end": preferences.working_hours.end.isoformat()
                 },
                 "max_daily_hours": preferences.max_daily_hours,
-                "buffer_minutes": preferences.buffer_minutes
+                "buffer_minutes": preferences.buffer_minutes,
+                "study_habits": preferences.study_habits if preferences.study_habits else None
             }
         }
 
         user_prompt = f"""
         Here is user's current calendar and the new task to be scheduled:
         {json.dumps(payload, indent=2)}
+
+        IMPORTANT: The current_datetime field shows the current time. ALL scheduled events MUST have start times AFTER this datetime.
+        Do NOT schedule any events in the past.
 
         Please return a JSON array of **new events** to be added to the Google Calendar and only the JSON array
         with no additional text beyond it, as it will be parsed directly to Google Calendar.
@@ -607,7 +614,7 @@ class LLMScheduler:
 
         • Ensure no event overlaps with existing calendar events or other newly created events.
 
-        • Make sure the tasks are not assigned to times that has already past, make sure they are assigned to future times/days.
+        • CRITICAL: All event start times must be AFTER current_datetime ({datetime.now().isoformat()}). Never schedule events in the past.
 
         • Output must be ONLY the JSON array of new events with valid ISO timestamps.
         """
@@ -643,12 +650,24 @@ class LLMScheduler:
     def _parse_events(self, events_data: List[dict]) -> List[CalendarEvent]:
         """Parse JSON events into CalendarEvent objects."""
         events = []
+        current_time = datetime.now()
+
         for data in events_data:
             try:
+                start_time = datetime.fromisoformat(data["start"])
+                end_time = datetime.fromisoformat(data["end"])
+
+                # Skip events scheduled in the past
+                # Handle timezone-aware vs naive datetime comparison
+                start_time_naive = start_time.replace(tzinfo=None) if start_time.tzinfo else start_time
+                if start_time_naive < current_time:
+                    print(f"Warning: Skipping event '{data.get('title', '')}' scheduled in the past (start: {start_time})")
+                    continue
+
                 events.append(CalendarEvent(
                     title=data.get("title", ""),
-                    start=datetime.fromisoformat(data["start"]),
-                    end=datetime.fromisoformat(data["end"]),
+                    start=start_time,
+                    end=end_time,
                     description=data.get("description", "")
                 ))
             except (KeyError, ValueError) as e:

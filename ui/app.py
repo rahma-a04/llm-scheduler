@@ -34,7 +34,8 @@ if "preferences" not in st.session_state:
         'work_start': time(9, 0),
         'work_end': time(22, 0),
         'max_daily_hours': settings.default_max_daily_hours,
-        'buffer_minutes': settings.default_buffer_minutes
+        'buffer_minutes': settings.default_buffer_minutes,
+        'study_habits': settings.default_study_habits
     }
 if 'google_token' not in st.session_state:
     st.session_state.google_token = None
@@ -167,7 +168,8 @@ with tab1:
                                 end=st.session_state.preferences['work_end']
                             ),
                             max_daily_hours=st.session_state.preferences['max_daily_hours'],
-                            buffer_minutes=st.session_state.preferences['buffer_minutes']
+                            buffer_minutes=st.session_state.preferences['buffer_minutes'],
+                            study_habits=st.session_state.preferences.get('study_habits', '')
                         )
 
                         # Fetch existing calendar events if connected
@@ -241,12 +243,21 @@ with tab2:
         help="Time buffer between events"
     )
 
+    study_habits = st.text_area(
+        "Study Habits & Preferences",
+        value=st.session_state.preferences.get('study_habits', ''),
+        placeholder="e.g., 'I focus best in the mornings', 'I prefer shorter study sessions', 'I need breaks between subjects'",
+        help="Describe your study habits and preferences to help the AI create a more personalized schedule",
+        height=100
+    )
+
     if st.button("💾 Save Preferences", type="primary"):
         st.session_state.preferences = {
             'work_start': work_start,
             'work_end': work_end,
             'max_daily_hours': max_daily_hours,
-            'buffer_minutes': buffer_minutes
+            'buffer_minutes': buffer_minutes,
+            'study_habits': study_habits
         }
         st.success("✅ Preferences saved!")
 

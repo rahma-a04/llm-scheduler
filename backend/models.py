@@ -78,6 +78,7 @@ class UserPreferences:
     working_hours: WorkingHours
     max_daily_hours: float
     buffer_minutes: int = 15
+    study_habits: Optional[str] = None
 
     def __post_init__(self):
         if self.max_daily_hours <= 0:
