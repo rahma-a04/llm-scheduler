@@ -20,14 +20,14 @@ def print_summary_table(results: Dict[str, Any]) -> None:
     all_results = results['results']
 
     # Compute aggregates
-    print("\n" + "=" * 100)
+    print("\n" + "=" * 130)
     print("SUMMARY METRICS (Mean ± Std)")
-    print("=" * 100)
+    print("=" * 130)
 
     # Header
-    header = f"{'Strategy':<20} | {'Conflict-free %':<15} | {'Deadline %':<12} | {'Parse %':<10} | {'Workload Var':<12} | {'Cost ($)':<10}"
+    header = f"{'Strategy':<20} | {'Conflict-free %':<15} | {'Deadline %':<12} | {'Parse %':<10} | {'Workload Var':<12} | {'Cost ($)':<10} | {'LLM Quality':<12} | {'LLM Pref':<12}"
     print(header)
-    print("-" * 100)
+    print("-" * 130)
 
     # Baseline
     baseline_metrics = [r['baseline'] for r in all_results if r.get('baseline')]
@@ -44,7 +44,7 @@ def print_summary_table(results: Dict[str, Any]) -> None:
         if strategy_metrics:
             print_strategy_row(strategy, strategy_metrics)
 
-    print("=" * 100)
+    print("=" * 130)
 
 
 def print_strategy_row(name: str, metrics_list: List[Dict[str, Any]]) -> None:
@@ -77,13 +77,29 @@ def print_strategy_row(name: str, metrics_list: List[Dict[str, Any]]) -> None:
     cost_mean = np.mean(cost_vals) if cost_vals else 0
     cost_std = np.std(cost_vals) if cost_vals else 0
 
+    # LLM quality score
+    quality_vals = [m.get('llm_quality_score', 0) for m in metrics_list if m.get('llm_quality_score', 0) > 0]
+    quality_mean = np.mean(quality_vals) if quality_vals else 0
+    quality_std = np.std(quality_vals) if quality_vals else 0
+
+    # LLM preference score
+    pref_vals = [m.get('llm_preference_score', 0) for m in metrics_list if m.get('llm_preference_score', 0) > 0]
+    pref_mean = np.mean(pref_vals) if pref_vals else 0
+    pref_std = np.std(pref_vals) if pref_vals else 0
+
+    # Format LLM scores (show N/A if not available)
+    quality_str = f"{quality_mean:>5.1f}±{quality_std:>4.1f}" if quality_vals else "N/A".center(12)
+    pref_str = f"{pref_mean:>5.1f}±{pref_std:>4.1f}" if pref_vals else "N/A".center(12)
+
     row = (
         f"{name:<20} | "
         f"{conflict_rate:>14.1f}% | "
         f"{deadline_mean:>5.1f}±{deadline_std:>4.1f}% | "
         f"{parse_rate:>9.1f}% | "
         f"{workload_mean:>5.2f}±{workload_std:>4.2f} | "
-        f"{cost_mean:>5.3f}±{cost_std:>3.3f}"
+        f"{cost_mean:>5.3f}±{cost_std:>3.3f} | "
+        f"{quality_str:>12} | "
+        f"{pref_str:>12}"
     )
     print(row)
 

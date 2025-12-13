@@ -14,7 +14,7 @@ from typing import List
 
 from backend.models import Task, CalendarEvent, UserPreferences, Schedule
 
-# The scope defines what your app can access (here, read/write Calendar)
+# Scope for Google Calendar API access (read/write permissions)
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
 
@@ -341,10 +341,11 @@ class BaselineScheduler:
         preferences: UserPreferences
     ) -> Schedule:
         """Generate schedule using greedy algorithm."""
-        # Sort tasks by priority (HIGH first) and deadline
+        # Sort tasks by deadline FIRST (earlier deadlines first), then by priority
+        # This ensures urgent tasks are scheduled before less urgent ones
         sorted_tasks = sorted(
             tasks,
-            key=lambda t: (t.priority.value, t.deadline)
+            key=lambda t: (t.deadline, t.priority.value)
         )
 
         all_events = []
@@ -381,9 +382,10 @@ class BaselineScheduler:
             busy_by_day.setdefault(day, []).append((start_with_buffer, end_with_buffer))
 
         # Calculate available days
-        current_date = datetime.now().date()
+        start_date = datetime.now().date()
         deadline_date = task.deadline.date()
         days = []
+        current_date = start_date
         while current_date <= deadline_date:
             days.append(current_date)
             current_date += timedelta(days=1)
@@ -391,9 +393,10 @@ class BaselineScheduler:
         if not days:
             return events
 
-        # Distribute hours across days
-        hours_remaining = task.weighted_hours
-        hours_per_day = hours_remaining / len(days)
+        # Greedy scheduling: schedule as much as possible each day until task is complete
+        # This is the standard greedy approach (not even distribution)
+        hours_remaining = task.estimated_hours
+        MIN_BLOCK_HOURS = 0.5  # Minimum 30 minutes per block
 
         for day in days:
             if hours_remaining <= 0:
@@ -409,17 +412,19 @@ class BaselineScheduler:
                 busy_by_day.get(day, [])
             )
 
-            daily_target = min(hours_per_day, hours_remaining, preferences.max_daily_hours)
+            daily_scheduled = 0.0
 
             for start, end in free_blocks:
-                if daily_target <= 0:
+                if hours_remaining <= 0 or daily_scheduled >= preferences.max_daily_hours:
                     break
 
                 block_hours = (end - start).total_seconds() / 3600
-                duration = min(block_hours, daily_target)
+                # Schedule as much as possible in this block (up to remaining hours and daily limit)
+                available = min(block_hours, hours_remaining, preferences.max_daily_hours - daily_scheduled)
 
-                if duration >= 0.5:  # Minimum 30 minutes
-                    event_end = start + timedelta(hours=duration)
+                # Only schedule if block meets minimum duration
+                if available >= MIN_BLOCK_HOURS:
+                    event_end = start + timedelta(hours=available)
                     events.append(CalendarEvent(
                         title=task.name,
                         start=start,
@@ -427,8 +432,8 @@ class BaselineScheduler:
                         description=f"{task.subject} (Priority: {task.priority.value})"
                     ))
 
-                    daily_target -= duration
-                    hours_remaining -= duration
+                    daily_scheduled += available
+                    hours_remaining -= available
 
                     if not task.can_be_split:
                         break

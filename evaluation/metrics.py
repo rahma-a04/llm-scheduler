@@ -6,9 +6,11 @@ scheduling quality, constraint satisfaction, and system performance.
 """
 
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import numpy as np
 from collections import defaultdict
+import json
+import re
 
 
 class ScheduleMetrics:
@@ -47,6 +49,12 @@ class ScheduleMetrics:
         self.within_working_hours_rate: float = 0.0
         self.weekend_violation: bool = False
 
+        # LLM-based quality metrics
+        self.llm_quality_score: float = 0.0
+        self.llm_quality_reasoning: str = ""
+        self.llm_preference_score: float = 0.0
+        self.llm_preference_reasoning: str = ""
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert metrics to dictionary for serialization."""
         return {
@@ -81,6 +89,12 @@ class ScheduleMetrics:
             # Preference compliance
             'within_working_hours_rate': self.within_working_hours_rate,
             'weekend_violation': self.weekend_violation,
+
+            # LLM-based quality metrics
+            'llm_quality_score': self.llm_quality_score,
+            'llm_quality_reasoning': self.llm_quality_reasoning,
+            'llm_preference_score': self.llm_preference_score,
+            'llm_preference_reasoning': self.llm_preference_reasoning,
         }
 
 
@@ -345,6 +359,194 @@ def check_working_hours_compliance(scheduled_events: List[Dict[str, Any]],
     return within_hours_rate, weekend_violation
 
 
+def evaluate_schedule_quality_with_llm(
+    scheduled_events: List[Dict[str, Any]],
+    tasks: List[Dict[str, Any]],
+    existing_events: List[Dict[str, Any]],
+    openai_client: Optional[Any] = None,
+    model: str = "gpt-4o-mini"
+) -> tuple[float, str]:
+    """Use LLM to evaluate overall schedule quality.
+
+    Args:
+        scheduled_events: List of newly scheduled events
+        tasks: List of task specifications
+        existing_events: List of existing calendar events
+        openai_client: OpenAI client instance (optional)
+        model: Model to use for evaluation (default: gpt-4o-mini for cost efficiency)
+
+    Returns:
+        Tuple of (quality_score, reasoning)
+        quality_score: 0-100 score indicating schedule quality
+        reasoning: Text explanation of the score
+    """
+    if openai_client is None:
+        return 0.0, "No OpenAI client provided"
+
+    if not scheduled_events:
+        return 0.0, "No events scheduled"
+
+    # Build evaluation prompt
+    system_prompt = """You are an expert schedule quality evaluator for student study schedules.
+
+Your task is to evaluate the quality of a generated study schedule based on multiple factors:
+
+1. **Task Distribution**: Are tasks spread reasonably across days, or crammed into a few days?
+2. **Workload Balance**: Is the daily workload balanced, or are some days overloaded?
+3. **Time Block Appropriateness**: Are study sessions reasonable lengths (30min-3hrs)?
+4. **Task Fragmentation**: Are tasks split appropriately, or over-fragmented into too many small blocks?
+5. **Deadline Awareness**: Are urgent tasks prioritized and scheduled closer to today?
+6. **Conflict Avoidance**: Do scheduled events avoid overlapping with existing commitments?
+7. **Overall Feasibility**: Does the schedule seem realistic and executable for a student?
+
+Provide a score from 0-100 where:
+- 90-100: Excellent schedule, well-balanced and thoughtful
+- 70-89: Good schedule with minor issues
+- 50-69: Acceptable schedule with some problems
+- 30-49: Poor schedule with significant issues
+- 0-29: Very poor or infeasible schedule
+
+Return your response as JSON:
+{
+  "score": <number between 0-100>,
+  "reasoning": "<brief explanation of score, 2-3 sentences>"
+}"""
+
+    user_prompt = f"""Evaluate this study schedule:
+
+**Tasks to Schedule:**
+{json.dumps(tasks, indent=2)}
+
+**Existing Calendar Events:**
+{json.dumps(existing_events, indent=2)}
+
+**Generated Schedule:**
+{json.dumps(scheduled_events, indent=2)}
+
+Please evaluate the quality of this schedule and return your assessment as JSON."""
+
+    try:
+        response = openai_client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.3
+        )
+
+        result_text = response.choices[0].message.content.strip()
+
+        # Remove markdown code fences if present
+        cleaned = re.sub(r"^```(?:json)?|```$", "", result_text.strip(), flags=re.MULTILINE).strip()
+
+        # Parse JSON
+        result = json.loads(cleaned)
+        score = float(result.get("score", 0))
+        reasoning = result.get("reasoning", "No reasoning provided")
+
+        # Clamp score to 0-100
+        score = max(0.0, min(100.0, score))
+
+        return score, reasoning
+
+    except Exception as e:
+        return 0.0, f"Error evaluating schedule: {str(e)}"
+
+
+def evaluate_preference_adherence_with_llm(
+    scheduled_events: List[Dict[str, Any]],
+    tasks: List[Dict[str, Any]],
+    preferences: Dict[str, Any],
+    openai_client: Optional[Any] = None,
+    model: str = "gpt-4o-mini"
+) -> tuple[float, str]:
+    """Use LLM to evaluate how well the schedule adheres to user preferences.
+
+    Args:
+        scheduled_events: List of newly scheduled events
+        tasks: List of task specifications
+        preferences: User preferences dictionary
+        openai_client: OpenAI client instance (optional)
+        model: Model to use for evaluation (default: gpt-4o-mini for cost efficiency)
+
+    Returns:
+        Tuple of (adherence_score, reasoning)
+        adherence_score: 0-100 score indicating preference adherence
+        reasoning: Text explanation of the score
+    """
+    if openai_client is None:
+        return 0.0, "No OpenAI client provided"
+
+    if not scheduled_events:
+        return 0.0, "No events scheduled"
+
+    # Build evaluation prompt
+    system_prompt = """You are an expert evaluator of schedule adherence to user preferences.
+
+Your task is to evaluate how well a generated study schedule follows the user's stated preferences.
+
+Evaluate based on:
+1. **Study Windows**: Are events scheduled within preferred study windows?
+2. **Daily Hour Limits**: Does the schedule respect max daily hours?
+3. **Break Patterns**: Are breaks incorporated as requested?
+4. **Additional Notes**: Are special requests honored (e.g., "no weekends", "morning preference", etc.)?
+
+Provide a score from 0-100 where:
+- 90-100: Excellent adherence, all preferences followed
+- 70-89: Good adherence with minor deviations
+- 50-69: Acceptable adherence with some violations
+- 30-49: Poor adherence with significant violations
+- 0-29: Very poor adherence, preferences largely ignored
+
+Return your response as JSON:
+{
+  "score": <number between 0-100>,
+  "reasoning": "<brief explanation of score, 2-3 sentences>"
+}"""
+
+    user_prompt = f"""Evaluate how well this schedule adheres to user preferences:
+
+**User Preferences:**
+{json.dumps(preferences, indent=2)}
+
+**Tasks to Schedule:**
+{json.dumps(tasks, indent=2)}
+
+**Generated Schedule:**
+{json.dumps(scheduled_events, indent=2)}
+
+Please evaluate the adherence to preferences and return your assessment as JSON."""
+
+    try:
+        response = openai_client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.3
+        )
+
+        result_text = response.choices[0].message.content.strip()
+
+        # Remove markdown code fences if present
+        cleaned = re.sub(r"^```(?:json)?|```$", "", result_text.strip(), flags=re.MULTILINE).strip()
+
+        # Parse JSON
+        result = json.loads(cleaned)
+        score = float(result.get("score", 0))
+        reasoning = result.get("reasoning", "No reasoning provided")
+
+        # Clamp score to 0-100
+        score = max(0.0, min(100.0, score))
+
+        return score, reasoning
+
+    except Exception as e:
+        return 0.0, f"Error evaluating preferences: {str(e)}"
+
+
 def calculate_api_cost(prompt_tokens: int, completion_tokens: int,
                       model: str = "gpt-4o") -> float:
     """Calculate API cost based on token usage.
@@ -392,7 +594,9 @@ def compute_all_metrics(
     latency_seconds: float = 0.0,
     prompt_tokens: int = 0,
     completion_tokens: int = 0,
-    model: str = "gpt-4o"
+    model: str = "gpt-4o",
+    openai_client: Optional[Any] = None,
+    evaluate_with_llm: bool = False
 ) -> ScheduleMetrics:
     """Compute all metrics for a schedule.
 
@@ -408,6 +612,8 @@ def compute_all_metrics(
         prompt_tokens: Number of prompt tokens
         completion_tokens: Number of completion tokens
         model: Model name for cost calculation
+        openai_client: OpenAI client for LLM-based evaluation (optional)
+        evaluate_with_llm: Whether to run LLM-based quality evaluation
 
     Returns:
         ScheduleMetrics object with all computed metrics
@@ -462,6 +668,22 @@ def compute_all_metrics(
         )
         metrics.within_working_hours_rate = within_rate
         metrics.weekend_violation = weekend_viol
+
+        # LLM-based evaluation (optional)
+        if evaluate_with_llm and openai_client:
+            # Evaluate schedule quality
+            quality_score, quality_reasoning = evaluate_schedule_quality_with_llm(
+                scheduled_events, tasks, existing_events, openai_client
+            )
+            metrics.llm_quality_score = quality_score
+            metrics.llm_quality_reasoning = quality_reasoning
+
+            # Evaluate preference adherence
+            pref_score, pref_reasoning = evaluate_preference_adherence_with_llm(
+                scheduled_events, tasks, preferences, openai_client
+            )
+            metrics.llm_preference_score = pref_score
+            metrics.llm_preference_reasoning = pref_reasoning
     else:
         # Set total_tasks for reporting even if parsing failed
         metrics.total_tasks = len(tasks)
@@ -476,9 +698,12 @@ def _parse_datetime(dt_string: Any) -> datetime | None:
         dt_string: Datetime string or dict
 
     Returns:
-        Datetime object or None if parsing fails
+        Datetime object or None if parsing fails (always timezone-naive)
     """
     if isinstance(dt_string, datetime):
+        # Normalize to naive datetime
+        if dt_string.tzinfo is not None:
+            return dt_string.replace(tzinfo=None)
         return dt_string
 
     if isinstance(dt_string, dict):
@@ -492,7 +717,11 @@ def _parse_datetime(dt_string: Any) -> datetime | None:
 
     try:
         # Try ISO format with timezone
-        return datetime.fromisoformat(dt_string.replace('Z', '+00:00'))
+        dt = datetime.fromisoformat(dt_string.replace('Z', '+00:00'))
+        # Normalize to naive datetime for consistent comparisons
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+        return dt
     except (ValueError, AttributeError):
         pass
 
@@ -500,7 +729,11 @@ def _parse_datetime(dt_string: Any) -> datetime | None:
         # Try date only (add time component)
         if 'T' not in dt_string:
             dt_string = f"{dt_string}T23:59:59"
-        return datetime.fromisoformat(dt_string)
+        dt = datetime.fromisoformat(dt_string)
+        # Normalize to naive datetime
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+        return dt
     except (ValueError, AttributeError):
         pass
 

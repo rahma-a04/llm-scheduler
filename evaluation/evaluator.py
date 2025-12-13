@@ -67,6 +67,10 @@ class Evaluator:
                 # Convert date to datetime (end of day)
                 deadline = datetime.fromisoformat(f"{deadline_str}T23:59:59")
 
+            # Normalize to naive datetime (strip timezone) for consistent comparisons
+            if deadline.tzinfo is not None:
+                deadline = deadline.replace(tzinfo=None)
+
             task = Task(
                 id=str(task_data['id']),
                 name=task_data['name'],
@@ -84,10 +88,20 @@ class Evaluator:
             start_dt = event_data['start'].get('dateTime', event_data['start'].get('date', ''))
             end_dt = event_data['end'].get('dateTime', event_data['end'].get('date', ''))
 
+            # Parse with timezone handling
+            start = datetime.fromisoformat(start_dt.replace('Z', '+00:00'))
+            end = datetime.fromisoformat(end_dt.replace('Z', '+00:00'))
+
+            # Normalize to naive datetime (strip timezone) for consistent comparisons
+            if start.tzinfo is not None:
+                start = start.replace(tzinfo=None)
+            if end.tzinfo is not None:
+                end = end.replace(tzinfo=None)
+
             event = CalendarEvent(
                 title=event_data.get('summary', 'Untitled'),
-                start=datetime.fromisoformat(start_dt.replace('Z', '+00:00')),
-                end=datetime.fromisoformat(end_dt.replace('Z', '+00:00')),
+                start=start,
+                end=end,
                 description=event_data.get('description', ''),
                 event_id=event_data.get('id', '')
             )
@@ -125,25 +139,33 @@ class Evaluator:
         if not study_windows:
             return WorkingHours(start=default_start, end=default_end)
 
-        # Extract first time range (simplified)
-        # Handle formats like "9am-5pm, 7pm-10pm" - take first range
-        first_range = study_windows.split(',')[0].strip()
+        # Extract ALL time ranges and use earliest start and latest end
+        # Handle formats like "9am-12pm, 2pm-5pm, 7pm-10pm"
+        ranges = [r.strip() for r in study_windows.split(',')]
 
-        # Try to extract times
-        try:
-            # Match patterns like "9am-5pm" or "09:00-17:00"
-            parts = first_range.split('-')
-            if len(parts) >= 2:
-                start_str = parts[0].strip()
-                end_str = parts[1].strip()
+        all_start_times = []
+        all_end_times = []
 
-                start_time = self._parse_time(start_str)
-                end_time = self._parse_time(end_str)
+        for time_range in ranges:
+            try:
+                # Match patterns like "9am-5pm" or "09:00-17:00"
+                parts = time_range.split('-')
+                if len(parts) >= 2:
+                    start_str = parts[0].strip()
+                    end_str = parts[1].strip()
 
-                if start_time and end_time:
-                    return WorkingHours(start=start_time, end=end_time)
-        except Exception:
-            pass
+                    start_time = self._parse_time(start_str)
+                    end_time = self._parse_time(end_str)
+
+                    if start_time and end_time:
+                        all_start_times.append(start_time)
+                        all_end_times.append(end_time)
+            except Exception:
+                continue
+
+        # Use earliest start and latest end to maximize available hours
+        if all_start_times and all_end_times:
+            return WorkingHours(start=min(all_start_times), end=max(all_end_times))
 
         return WorkingHours(start=default_start, end=default_end)
 
@@ -216,7 +238,7 @@ class Evaluator:
 
             latency = time.time() - start_time
 
-            # Compute metrics
+            # Compute metrics (with LLM evaluation for quality scoring)
             metrics = compute_all_metrics(
                 scheduled_events=scheduled_events,
                 existing_events=[self._event_to_dict(e) for e in existing_events],
@@ -224,7 +246,9 @@ class Evaluator:
                 preferences=prefs_dict,
                 parsing_success=True,
                 latency_seconds=latency,
-                model="baseline"
+                model="baseline",
+                openai_client=self.client,
+                evaluate_with_llm=True  # Enable LLM-based quality evaluation for baseline too
             )
 
             return scheduled_events, metrics
@@ -302,7 +326,9 @@ class Evaluator:
                 latency_seconds=latency,
                 prompt_tokens=prompt_tokens,
                 completion_tokens=completion_tokens,
-                model=self.model
+                model=self.model,
+                openai_client=self.client,
+                evaluate_with_llm=True  # Enable LLM-based quality evaluation for LLM strategies
             )
 
             return scheduled_events, metrics
