@@ -207,9 +207,8 @@ def main():
 
     # Optionally create plots
     try:
-        plot_file = str(output_path.with_suffix('.png'))
-        create_comparison_plots(results, output_file=plot_file)
-        print(f"\nComparison plots saved to {plot_file}")
+        plot_dir = str(output_path.parent / "plots")
+        create_comparison_plots(results, output_dir=plot_dir)
     except Exception as e:
         print(f"\nNote: Could not create plots: {e}")
         print("Install matplotlib to enable plot generation: pip install matplotlib")

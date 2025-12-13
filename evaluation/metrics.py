@@ -24,6 +24,12 @@ class ScheduleMetrics:
         self.tasks_meeting_deadline: int = 0
         self.total_tasks: int = 0
 
+        # Additional deadline metrics (for debugging/analysis)
+        self.tasks_fully_scheduled: int = 0
+        self.tasks_partially_scheduled: int = 0
+        self.tasks_unscheduled: int = 0
+        self.tasks_missing_deadline: int = 0
+
         # Quality/utility metrics
         self.workload_variance: float = 0.0
         self.average_daily_hours: float = 0.0
@@ -64,6 +70,12 @@ class ScheduleMetrics:
             'deadline_compliance_rate': self.deadline_compliance_rate,
             'tasks_meeting_deadline': self.tasks_meeting_deadline,
             'total_tasks': self.total_tasks,
+
+            # Additional deadline metrics
+            'tasks_fully_scheduled': self.tasks_fully_scheduled,
+            'tasks_partially_scheduled': self.tasks_partially_scheduled,
+            'tasks_unscheduled': self.tasks_unscheduled,
+            'tasks_missing_deadline': self.tasks_missing_deadline,
 
             # Quality metrics
             'workload_variance': self.workload_variance,
@@ -134,18 +146,24 @@ def check_conflicts(scheduled_events: List[Dict[str, Any]],
 
 
 def check_deadline_compliance(scheduled_events: List[Dict[str, Any]],
-                              tasks: List[Dict[str, Any]]) -> tuple[float, int, int]:
+                              tasks: List[Dict[str, Any]]) -> tuple[float, int, int, int, int, int, int]:
     """Check what fraction of tasks meet their deadlines.
+
+    A task "meets deadline" if and only if:
+    1. The total scheduled hours >= estimated hours required (fully scheduled)
+    2. All scheduled blocks end before the deadline
 
     Args:
         scheduled_events: List of scheduled events
         tasks: List of task specifications with deadlines
 
     Returns:
-        Tuple of (compliance_rate, tasks_meeting_deadline, total_tasks)
+        Tuple of (compliance_rate, tasks_meeting_deadline, total_tasks,
+                  tasks_fully_scheduled, tasks_partially_scheduled,
+                  tasks_unscheduled, tasks_missing_deadline)
     """
     if not tasks:
-        return 1.0, 0, 0
+        return 1.0, 0, 0, 0, 0, 0, 0
 
     # Group scheduled events by task
     task_schedules = defaultdict(list)
@@ -159,34 +177,63 @@ def check_deadline_compliance(scheduled_events: List[Dict[str, Any]],
                 break
 
     tasks_meeting_deadline = 0
+    tasks_fully_scheduled = 0
+    tasks_partially_scheduled = 0
+    tasks_unscheduled = 0
+    tasks_missing_deadline = 0
 
     for task in tasks:
         task_id = task['id']
         deadline = _parse_datetime(task['deadline'])
+        estimated_hours = task.get('estimated_hours', 0.0)
 
         if not deadline:
             continue
 
-        # Check if all events for this task finish before deadline
+        # Get all events for this task
         task_events = task_schedules.get(task_id, [])
 
         if not task_events:
-            # Task not scheduled at all
+            # Task not scheduled at all - counts as deadline miss
+            tasks_unscheduled += 1
             continue
 
-        # Find the latest end time for this task
+        # Calculate total scheduled hours for this task
+        total_scheduled_hours = 0.0
         latest_end = None
+
         for event in task_events:
+            start_time = _parse_datetime(event.get('start', ''))
             end_time = _parse_datetime(event.get('end', ''))
-            if end_time:
+
+            if start_time and end_time:
+                duration_hours = (end_time - start_time).total_seconds() / 3600
+                total_scheduled_hours += duration_hours
+
                 if latest_end is None or end_time > latest_end:
                     latest_end = end_time
 
-        if latest_end and latest_end <= deadline:
-            tasks_meeting_deadline += 1
+        # Determine task status
+        TOLERANCE = 0.1  # Allow 0.1 hour (6 min) tolerance for rounding
+        is_fully_scheduled = total_scheduled_hours >= (estimated_hours - TOLERANCE)
+        ends_before_deadline = latest_end and latest_end <= deadline
+
+        if is_fully_scheduled:
+            tasks_fully_scheduled += 1
+            if ends_before_deadline:
+                # Task is fully scheduled AND meets deadline
+                tasks_meeting_deadline += 1
+            else:
+                # Task is fully scheduled but MISSES deadline
+                tasks_missing_deadline += 1
+        else:
+            # Task is only partially scheduled
+            tasks_partially_scheduled += 1
 
     compliance_rate = tasks_meeting_deadline / len(tasks) if tasks else 0.0
-    return compliance_rate, tasks_meeting_deadline, len(tasks)
+    return (compliance_rate, tasks_meeting_deadline, len(tasks),
+            tasks_fully_scheduled, tasks_partially_scheduled,
+            tasks_unscheduled, tasks_missing_deadline)
 
 
 def compute_workload_balance(scheduled_events: List[Dict[str, Any]]) -> tuple[float, float]:
@@ -640,10 +687,15 @@ def compute_all_metrics(
         metrics.num_conflicts = num_conflicts
 
         # Deadline compliance
-        compliance, meeting, total = check_deadline_compliance(scheduled_events, tasks)
+        (compliance, meeting, total, fully_sched, partially_sched,
+         unsched, missing_deadline) = check_deadline_compliance(scheduled_events, tasks)
         metrics.deadline_compliance_rate = compliance
         metrics.tasks_meeting_deadline = meeting
         metrics.total_tasks = total
+        metrics.tasks_fully_scheduled = fully_sched
+        metrics.tasks_partially_scheduled = partially_sched
+        metrics.tasks_unscheduled = unsched
+        metrics.tasks_missing_deadline = missing_deadline
 
         # Workload balance
         variance, avg_hours = compute_workload_balance(scheduled_events)
