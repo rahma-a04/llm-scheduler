@@ -1,0 +1,2938 @@
+[
+  {
+    "id": 1,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "9am-12pm, 2pm-5pm, 7pm-10pm",
+      "max_daily_hours": 6,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Prefer morning study sessions"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Biology Lecture",
+        "start": {
+          "dateTime": "2025-12-15T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T14:15:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Weekly lecture"
+      },
+      {
+        "id": "evt2",
+        "summary": "Math Recitation",
+        "start": {
+          "dateTime": "2025-12-17T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T11:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Problem solving session"
+      },
+      {
+        "id": "evt3",
+        "summary": "Work Study",
+        "start": {
+          "dateTime": "2025-12-16T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Library desk shift"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Biology Lab Report",
+        "subject": "Biology",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Math Problem Set 5",
+        "subject": "Math",
+        "estimated_hours": 4.5,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "History Reading Chapter 8",
+        "subject": "History",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-20",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Chemistry Quiz Prep",
+        "subject": "Chemistry",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-18",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "English Essay Draft",
+        "subject": "English",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-25",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "8am-11am, 1pm-4pm, 8pm-11pm",
+      "max_daily_hours": 7,
+      "break_pattern": "10 min break every 90 minutes",
+      "additional_notes": "I don't work on weekends"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Economics Lecture",
+        "start": {
+          "dateTime": "2025-12-15T11:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T12:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Macroeconomics"
+      },
+      {
+        "id": "evt2",
+        "summary": "CS Lab",
+        "start": {
+          "dateTime": "2025-12-16T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Programming lab"
+      },
+      {
+        "id": "evt3",
+        "summary": "Study Group",
+        "start": {
+          "dateTime": "2025-12-17T19:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T21:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Group project meeting"
+      },
+      {
+        "id": "evt4",
+        "summary": "Office Hours",
+        "start": {
+          "dateTime": "2025-12-18T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Math professor office hours"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Economics Problem Set",
+        "subject": "Economics",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-21",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Programming Assignment 2",
+        "subject": "CS",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Statistics Homework",
+        "subject": "Statistics",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Book Review",
+        "subject": "Literature",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-26",
+        "priority": "low"
+      },
+      {
+        "id": 5,
+        "name": "Lab Prep Materials",
+        "subject": "CS",
+        "estimated_hours": 1.0,
+        "deadline": "2025-12-16",
+        "priority": "medium"
+      },
+      {
+        "id": 6,
+        "name": "Econ Reading Notes",
+        "subject": "Economics",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-22",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "6am-9am, 12pm-3pm, 6pm-9pm",
+      "max_daily_hours": 5,
+      "break_pattern": "20 min break every 2 hours",
+      "additional_notes": "Early riser, prefer getting work done before noon"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Chemistry Lecture",
+        "start": {
+          "dateTime": "2025-12-15T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T10:15:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Organic chemistry"
+      },
+      {
+        "id": "evt2",
+        "summary": "Physics Lab",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Lab experiment"
+      },
+      {
+        "id": "evt3",
+        "summary": "Tutoring Session",
+        "start": {
+          "dateTime": "2025-12-18T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T19:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Tutoring calculus students"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Chemistry Problem Set 6",
+        "subject": "Chemistry",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-20",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Physics Lab Report",
+        "subject": "Physics",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Calculus Practice Problems",
+        "subject": "Math",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Research Paper Outline",
+        "subject": "Biology",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-24",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Chemistry Quiz Review",
+        "subject": "Chemistry",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-17",
+        "priority": "high"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "10am-1pm, 3pm-6pm, 9pm-11pm",
+      "max_daily_hours": 6,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "No study on Saturdays or Sundays"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Psychology Lecture",
+        "start": {
+          "dateTime": "2025-12-15T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T15:15:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Cognitive psychology"
+      },
+      {
+        "id": "evt2",
+        "summary": "Sociology Seminar",
+        "start": {
+          "dateTime": "2025-12-17T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Weekly discussion"
+      },
+      {
+        "id": "evt3",
+        "summary": "Research Assistant Work",
+        "start": {
+          "dateTime": "2025-12-16T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Data collection"
+      },
+      {
+        "id": "evt4",
+        "summary": "Club Meeting",
+        "start": {
+          "dateTime": "2025-12-18T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T19:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Student organization meeting"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Psychology Research Paper",
+        "subject": "Psychology",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-25",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Sociology Case Study",
+        "subject": "Sociology",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-22",
+        "priority": "medium"
+      },
+      {
+        "id": 3,
+        "name": "Statistics Assignment",
+        "subject": "Statistics",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-20",
+        "priority": "high"
+      },
+      {
+        "id": 4,
+        "name": "Reading Response Paper",
+        "subject": "English",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-21",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Presentation Prep",
+        "subject": "Psychology",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-24",
+        "priority": "low"
+      },
+      {
+        "id": 6,
+        "name": "Exam Study Guide",
+        "subject": "Sociology",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "1pm-5pm, 7pm-10pm",
+      "max_daily_hours": 5,
+      "break_pattern": "10 min break every hour",
+      "additional_notes": "Not a morning person, need sleep until noon"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Literature Seminar",
+        "start": {
+          "dateTime": "2025-12-16T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Modern literature discussion"
+      },
+      {
+        "id": "evt2",
+        "summary": "History Lecture",
+        "start": {
+          "dateTime": "2025-12-17T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T14:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "20th century history"
+      },
+      {
+        "id": "evt3",
+        "summary": "Writing Center Shift",
+        "start": {
+          "dateTime": "2025-12-18T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Peer tutoring"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Literary Analysis Essay",
+        "subject": "Literature",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "History Research Paper Draft",
+        "subject": "History",
+        "estimated_hours": 4.5,
+        "deadline": "2025-12-26",
+        "priority": "medium"
+      },
+      {
+        "id": 3,
+        "name": "Philosophy Reading",
+        "subject": "Philosophy",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Creative Writing Assignment",
+        "subject": "English",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-22",
+        "priority": "low"
+      },
+      {
+        "id": 5,
+        "name": "Annotated Bibliography",
+        "subject": "History",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-21",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "8am-12pm, 2pm-5pm, 8pm-10pm",
+      "max_daily_hours": 7,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Most productive in morning hours"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Engineering Lecture",
+        "start": {
+          "dateTime": "2025-12-15T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T14:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Mechanical engineering"
+      },
+      {
+        "id": "evt2",
+        "summary": "CAD Lab",
+        "start": {
+          "dateTime": "2025-12-16T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Computer-aided design"
+      },
+      {
+        "id": "evt3",
+        "summary": "Project Team Meeting",
+        "start": {
+          "dateTime": "2025-12-17T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T19:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Senior design project"
+      },
+      {
+        "id": "evt4",
+        "summary": "Thermodynamics Discussion",
+        "start": {
+          "dateTime": "2025-12-19T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-19T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "TA-led discussion"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Thermodynamics Problem Set",
+        "subject": "Engineering",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "CAD Project Part 2",
+        "subject": "Engineering",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-24",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Materials Science Quiz Prep",
+        "subject": "Engineering",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-18",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Statics Review",
+        "subject": "Engineering",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-20",
+        "priority": "low"
+      },
+      {
+        "id": 5,
+        "name": "Lab Report 4",
+        "subject": "Engineering",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-23",
+        "priority": "medium"
+      },
+      {
+        "id": 6,
+        "name": "Design Sketches",
+        "subject": "Engineering",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-21",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "9am-12pm, 3pm-6pm, 7pm-9pm",
+      "max_daily_hours": 6,
+      "break_pattern": "20 min break every 2 hours",
+      "additional_notes": "Need breaks for meals, work best with consistent routine"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Neuroscience Lecture",
+        "start": {
+          "dateTime": "2025-12-15T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Introduction to neuroscience"
+      },
+      {
+        "id": "evt2",
+        "summary": "Biology Lab",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Molecular biology lab"
+      },
+      {
+        "id": "evt3",
+        "summary": "Volunteer Work",
+        "start": {
+          "dateTime": "2025-12-18T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Hospital volunteering"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Neuroscience Reading Summary",
+        "subject": "Neuroscience",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      },
+      {
+        "id": 2,
+        "name": "Biology Lab Write-up",
+        "subject": "Biology",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Organic Chemistry Problem Set",
+        "subject": "Chemistry",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-25",
+        "priority": "high"
+      },
+      {
+        "id": 4,
+        "name": "Biochemistry Notes Review",
+        "subject": "Chemistry",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-17",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Research Proposal Draft",
+        "subject": "Neuroscience",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-24",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "7am-10am, 1pm-4pm, 6pm-8pm",
+      "max_daily_hours": 6,
+      "break_pattern": "10 min break every 90 minutes",
+      "additional_notes": "Weekend work is okay, prefer short focused sessions"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Marketing Class",
+        "start": {
+          "dateTime": "2025-12-15T11:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T12:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Consumer behavior"
+      },
+      {
+        "id": "evt2",
+        "summary": "Accounting Lecture",
+        "start": {
+          "dateTime": "2025-12-16T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T15:15:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Financial accounting"
+      },
+      {
+        "id": "evt3",
+        "summary": "Internship Interview",
+        "start": {
+          "dateTime": "2025-12-17T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T11:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Virtual interview"
+      },
+      {
+        "id": "evt4",
+        "summary": "Finance Study Group",
+        "start": {
+          "dateTime": "2025-12-18T19:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T21:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Group exam prep"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Marketing Case Analysis",
+        "subject": "Business",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-21",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Accounting Problem Set 7",
+        "subject": "Business",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Finance Exam Study",
+        "subject": "Business",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-26",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Business Ethics Paper",
+        "subject": "Business",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-22",
+        "priority": "low"
+      },
+      {
+        "id": 5,
+        "name": "Excel Assignment",
+        "subject": "Business",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      },
+      {
+        "id": 6,
+        "name": "Market Research Report",
+        "subject": "Business",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-24",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "10am-2pm, 4pm-7pm, 9pm-11pm",
+      "max_daily_hours": 7,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Avoid early mornings, prefer evening study"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Computer Science Lecture",
+        "start": {
+          "dateTime": "2025-12-15T14:30:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Data structures"
+      },
+      {
+        "id": "evt2",
+        "summary": "Algorithm Discussion Section",
+        "start": {
+          "dateTime": "2025-12-16T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T11:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Weekly discussion"
+      },
+      {
+        "id": "evt3",
+        "summary": "Hackathon Planning",
+        "start": {
+          "dateTime": "2025-12-17T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T20:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Team meeting"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Data Structures Assignment 4",
+        "subject": "CS",
+        "estimated_hours": 7.0,
+        "deadline": "2025-12-24",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Algorithm Analysis",
+        "subject": "CS",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-20",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Database Design Project",
+        "subject": "CS",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-27",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Coding Practice Problems",
+        "subject": "CS",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-19",
+        "priority": "low"
+      },
+      {
+        "id": 5,
+        "name": "Software Testing Lab",
+        "subject": "CS",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-22",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "8am-11am, 1pm-3pm, 7pm-10pm",
+      "max_daily_hours": 6,
+      "break_pattern": "10 min break every hour",
+      "additional_notes": "I don't work on weekends, weekdays only"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Physics Lecture",
+        "start": {
+          "dateTime": "2025-12-15T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Quantum mechanics"
+      },
+      {
+        "id": "evt2",
+        "summary": "Math Lecture",
+        "start": {
+          "dateTime": "2025-12-16T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T10:15:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Linear algebra"
+      },
+      {
+        "id": "evt3",
+        "summary": "Physics Lab",
+        "start": {
+          "dateTime": "2025-12-17T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Experimental physics"
+      },
+      {
+        "id": "evt4",
+        "summary": "TA Office Hours",
+        "start": {
+          "dateTime": "2025-12-18T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Calculus help"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Quantum Mechanics Problem Set",
+        "subject": "Physics",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Linear Algebra Homework",
+        "subject": "Math",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-21",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Physics Lab Report",
+        "subject": "Physics",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-24",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Differential Equations Practice",
+        "subject": "Math",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Midterm Review Notes",
+        "subject": "Physics",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-25",
+        "priority": "low"
+      },
+      {
+        "id": 6,
+        "name": "Computational Physics Code",
+        "subject": "Physics",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-22",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "9am-12pm, 2pm-5pm, 8pm-10pm",
+      "max_daily_hours": 7,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Flexible schedule, can adjust as needed"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Spanish Class",
+        "start": {
+          "dateTime": "2025-12-15T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T11:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Intermediate Spanish"
+      },
+      {
+        "id": "evt2",
+        "summary": "Art History Lecture",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T14:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Renaissance art"
+      },
+      {
+        "id": "evt3",
+        "summary": "Music Theory Class",
+        "start": {
+          "dateTime": "2025-12-17T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T16:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Harmony and counterpoint"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Spanish Composition",
+        "subject": "Spanish",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-20",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Art History Paper",
+        "subject": "Art History",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-25",
+        "priority": "medium"
+      },
+      {
+        "id": 3,
+        "name": "Music Theory Exercises",
+        "subject": "Music",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Spanish Oral Presentation Prep",
+        "subject": "Spanish",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 5,
+        "name": "Museum Visit Report",
+        "subject": "Art History",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-22",
+        "priority": "low"
+      },
+      {
+        "id": 6,
+        "name": "Composition Assignment",
+        "subject": "Music",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-26",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "7am-9am, 12pm-3pm, 5pm-8pm",
+      "max_daily_hours": 6,
+      "break_pattern": "20 min break every 2 hours",
+      "additional_notes": "Training schedule requires early morning availability"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Team Practice",
+        "start": {
+          "dateTime": "2025-12-15T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T17:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Soccer practice"
+      },
+      {
+        "id": "evt2",
+        "summary": "Kinesiology Lecture",
+        "start": {
+          "dateTime": "2025-12-16T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Exercise physiology"
+      },
+      {
+        "id": "evt3",
+        "summary": "Strength Training",
+        "start": {
+          "dateTime": "2025-12-17T06:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T07:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Weight room"
+      },
+      {
+        "id": "evt4",
+        "summary": "Nutrition Seminar",
+        "start": {
+          "dateTime": "2025-12-18T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Sports nutrition"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Kinesiology Lab Report",
+        "subject": "Kinesiology",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Nutrition Case Study",
+        "subject": "Nutrition",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-20",
+        "priority": "medium"
+      },
+      {
+        "id": 3,
+        "name": "Anatomy Quiz Prep",
+        "subject": "Anatomy",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      },
+      {
+        "id": 4,
+        "name": "Exercise Program Design",
+        "subject": "Kinesiology",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-24",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Sports Psychology Reading",
+        "subject": "Psychology",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-21",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "10am-1pm, 3pm-6pm, 8pm-11pm",
+      "max_daily_hours": 8,
+      "break_pattern": "10 min break every 90 minutes",
+      "additional_notes": "Can handle longer study days when needed"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Architecture Studio",
+        "start": {
+          "dateTime": "2025-12-15T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Design studio"
+      },
+      {
+        "id": "evt2",
+        "summary": "Structures Lecture",
+        "start": {
+          "dateTime": "2025-12-16T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Structural systems"
+      },
+      {
+        "id": "evt3",
+        "summary": "Design Critique",
+        "start": {
+          "dateTime": "2025-12-18T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Project reviews"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Design Project Model",
+        "subject": "Architecture",
+        "estimated_hours": 8.0,
+        "deadline": "2025-12-25",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Structures Problem Set",
+        "subject": "Architecture",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-21",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Site Analysis Drawings",
+        "subject": "Architecture",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-23",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Building Systems Reading",
+        "subject": "Architecture",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-19",
+        "priority": "low"
+      },
+      {
+        "id": 5,
+        "name": "Precedent Study Presentation",
+        "subject": "Architecture",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-22",
+        "priority": "medium"
+      },
+      {
+        "id": 6,
+        "name": "Portfolio Updates",
+        "subject": "Architecture",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-26",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "9am-12pm, 2pm-4pm, 7pm-9pm",
+      "max_daily_hours": 5,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Part-time job limits study hours"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Environmental Science Lecture",
+        "start": {
+          "dateTime": "2025-12-15T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Ecology and conservation"
+      },
+      {
+        "id": "evt2",
+        "summary": "Part-time Job",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Coffee shop shift"
+      },
+      {
+        "id": "evt3",
+        "summary": "Field Lab",
+        "start": {
+          "dateTime": "2025-12-17T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Outdoor research"
+      },
+      {
+        "id": "evt4",
+        "summary": "Part-time Job",
+        "start": {
+          "dateTime": "2025-12-18T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Coffee shop shift"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Ecology Research Paper",
+        "subject": "Environmental Science",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-26",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Field Data Analysis",
+        "subject": "Environmental Science",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-22",
+        "priority": "medium"
+      },
+      {
+        "id": 3,
+        "name": "Conservation Biology Reading",
+        "subject": "Environmental Science",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-20",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "GIS Mapping Assignment",
+        "subject": "Environmental Science",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-24",
+        "priority": "high"
+      },
+      {
+        "id": 5,
+        "name": "Quiz Preparation",
+        "subject": "Environmental Science",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "8am-11am, 1pm-5pm, 7pm-9pm",
+      "max_daily_hours": 7,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Prefer consistent daily schedule"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Philosophy Seminar",
+        "start": {
+          "dateTime": "2025-12-15T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Ethics discussion"
+      },
+      {
+        "id": "evt2",
+        "summary": "Political Science Lecture",
+        "start": {
+          "dateTime": "2025-12-16T11:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T12:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Comparative politics"
+      },
+      {
+        "id": "evt3",
+        "summary": "Debate Club",
+        "start": {
+          "dateTime": "2025-12-17T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T20:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Practice debate"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Philosophy Essay",
+        "subject": "Philosophy",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-24",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Political Theory Paper",
+        "subject": "Political Science",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-25",
+        "priority": "medium"
+      },
+      {
+        "id": 3,
+        "name": "Ethics Reading Response",
+        "subject": "Philosophy",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-20",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Policy Analysis Brief",
+        "subject": "Political Science",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 5,
+        "name": "Debate Research",
+        "subject": "Communication",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-21",
+        "priority": "low"
+      },
+      {
+        "id": 6,
+        "name": "Comparative Politics Notes",
+        "subject": "Political Science",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-19",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "11am-3pm, 5pm-8pm, 9pm-11pm",
+      "max_daily_hours": 6,
+      "break_pattern": "10 min break every hour",
+      "additional_notes": "Night owl, struggle with early mornings"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Film Studies Screening",
+        "start": {
+          "dateTime": "2025-12-15T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T20:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Weekly film viewing"
+      },
+      {
+        "id": "evt2",
+        "summary": "Media Production Class",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Video editing workshop"
+      },
+      {
+        "id": "evt3",
+        "summary": "Journalism Lab",
+        "start": {
+          "dateTime": "2025-12-17T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "News writing"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Film Analysis Essay",
+        "subject": "Film Studies",
+        "estimated_hours": 4.5,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Video Project Editing",
+        "subject": "Media Production",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-25",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "News Article Draft",
+        "subject": "Journalism",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-20",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Screenplay Scene",
+        "subject": "Film Studies",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-22",
+        "priority": "low"
+      },
+      {
+        "id": 5,
+        "name": "Media Theory Reading",
+        "subject": "Media Studies",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-19",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "9am-12pm, 3pm-6pm, 8pm-10pm",
+      "max_daily_hours": 6,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "No study on Saturdays or Sundays, religious observance"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Anthropology Lecture",
+        "start": {
+          "dateTime": "2025-12-15T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T14:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Cultural anthropology"
+      },
+      {
+        "id": "evt2",
+        "summary": "Linguistics Seminar",
+        "start": {
+          "dateTime": "2025-12-16T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Syntax and semantics"
+      },
+      {
+        "id": "evt3",
+        "summary": "Research Meeting",
+        "start": {
+          "dateTime": "2025-12-17T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T16:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Faculty advisor meeting"
+      },
+      {
+        "id": "evt4",
+        "summary": "Language Club",
+        "start": {
+          "dateTime": "2025-12-18T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T18:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Conversation practice"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Ethnography Project",
+        "subject": "Anthropology",
+        "estimated_hours": 7.0,
+        "deadline": "2025-12-26",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Linguistics Problem Set",
+        "subject": "Linguistics",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-21",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Field Notes Transcription",
+        "subject": "Anthropology",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-20",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Language Documentation",
+        "subject": "Linguistics",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-24",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Theory Reading Summary",
+        "subject": "Anthropology",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-19",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "7am-10am, 2pm-5pm, 7pm-9pm",
+      "max_daily_hours": 6,
+      "break_pattern": "20 min break every 2 hours",
+      "additional_notes": "Commuter student, travel time affects availability"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Geology Lecture",
+        "start": {
+          "dateTime": "2025-12-15T11:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T12:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Earth systems"
+      },
+      {
+        "id": "evt2",
+        "summary": "Lab Session",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Mineralogy lab"
+      },
+      {
+        "id": "evt3",
+        "summary": "Astronomy Class",
+        "start": {
+          "dateTime": "2025-12-17T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Planetary science"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Geology Lab Report",
+        "subject": "Geology",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Rock Identification Quiz Prep",
+        "subject": "Geology",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Astronomy Problem Set",
+        "subject": "Astronomy",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-22",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Field Trip Report",
+        "subject": "Geology",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-21",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Observatory Assignment",
+        "subject": "Astronomy",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-24",
+        "priority": "low"
+      },
+      {
+        "id": 6,
+        "name": "Reading Notes",
+        "subject": "Geology",
+        "estimated_hours": 1.5,
+        "deadline": "2025-12-20",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "10am-2pm, 4pm-7pm, 9pm-11pm",
+      "max_daily_hours": 7,
+      "break_pattern": "10 min break every 90 minutes",
+      "additional_notes": "Works best with varied schedule, can adapt"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Statistics Lecture",
+        "start": {
+          "dateTime": "2025-12-15T14:30:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Probability theory"
+      },
+      {
+        "id": "evt2",
+        "summary": "Data Science Lab",
+        "start": {
+          "dateTime": "2025-12-16T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Machine learning"
+      },
+      {
+        "id": "evt3",
+        "summary": "R Workshop",
+        "start": {
+          "dateTime": "2025-12-18T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Statistical computing"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Statistics Homework 6",
+        "subject": "Statistics",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "ML Model Training",
+        "subject": "Data Science",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-25",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Data Visualization Project",
+        "subject": "Data Science",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-24",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "R Programming Assignment",
+        "subject": "Statistics",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-21",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Probability Practice Problems",
+        "subject": "Statistics",
+        "estimated_hours": 2.0,
+        "deadline": "2025-12-20",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "split_type": "standard",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "8am-11am, 1pm-4pm, 6pm-9pm",
+      "max_daily_hours": 7,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Balanced schedule works best for me"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Public Health Lecture",
+        "start": {
+          "dateTime": "2025-12-15T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Epidemiology"
+      },
+      {
+        "id": "evt2",
+        "summary": "Biostatistics Lab",
+        "start": {
+          "dateTime": "2025-12-16T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Statistical analysis"
+      },
+      {
+        "id": "evt3",
+        "summary": "Community Health Practicum",
+        "start": {
+          "dateTime": "2025-12-17T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Field work"
+      },
+      {
+        "id": "evt4",
+        "summary": "Seminar",
+        "start": {
+          "dateTime": "2025-12-18T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T18:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Global health issues"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Epidemiology Case Study",
+        "subject": "Public Health",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-24",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Biostatistics Problem Set",
+        "subject": "Biostatistics",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Community Assessment Report",
+        "subject": "Public Health",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-26",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Health Policy Brief",
+        "subject": "Public Health",
+        "estimated_hours": 3.5,
+        "deadline": "2025-12-23",
+        "priority": "medium"
+      },
+      {
+        "id": 5,
+        "name": "Data Analysis Exercise",
+        "subject": "Biostatistics",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-20",
+        "priority": "low"
+      },
+      {
+        "id": 6,
+        "name": "Literature Review",
+        "subject": "Public Health",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-21",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "split_type": "edge",
+    "feasibility": "infeasible",
+    "preferences": {
+      "study_windows": "2pm-5pm, 7pm-9pm",
+      "max_daily_hours": 4,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "I don't work on weekends"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Chemistry Lecture",
+        "start": {
+          "dateTime": "2025-12-15T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T11:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Organic chemistry"
+      },
+      {
+        "id": "evt2",
+        "summary": "Lab",
+        "start": {
+          "dateTime": "2025-12-15T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Weekly lab"
+      },
+      {
+        "id": "evt3",
+        "summary": "Work Shift",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Part-time job"
+      },
+      {
+        "id": "evt4",
+        "summary": "Study Group",
+        "start": {
+          "dateTime": "2025-12-16T19:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T21:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Group meeting"
+      },
+      {
+        "id": "evt5",
+        "summary": "Lecture",
+        "start": {
+          "dateTime": "2025-12-17T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Physics lecture"
+      },
+      {
+        "id": "evt6",
+        "summary": "Work Shift",
+        "start": {
+          "dateTime": "2025-12-18T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Part-time job"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Major Research Paper",
+        "subject": "Chemistry",
+        "estimated_hours": 15.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Physics Problem Set",
+        "subject": "Physics",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-18",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Lab Report",
+        "subject": "Chemistry",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-18",
+        "priority": "high"
+      },
+      {
+        "id": 4,
+        "name": "Exam Preparation",
+        "subject": "Physics",
+        "estimated_hours": 8.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "split_type": "edge",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "6am-10pm",
+      "max_daily_hours": 12,
+      "break_pattern": "10 min break every hour",
+      "additional_notes": "Can work very long hours when needed, ultra-flexible"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Thesis Defense",
+        "start": {
+          "dateTime": "2025-12-23T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-23T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Final defense"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Thesis Final Revisions",
+        "subject": "Research",
+        "estimated_hours": 25.0,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Presentation Slides",
+        "subject": "Research",
+        "estimated_hours": 8.0,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Defense Practice",
+        "subject": "Research",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 4,
+        "name": "Bibliography Formatting",
+        "subject": "Research",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-21",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "split_type": "edge",
+    "feasibility": "infeasible",
+    "preferences": {
+      "study_windows": "9am-12pm, 2pm-5pm",
+      "max_daily_hours": 5,
+      "break_pattern": "20 min break every 2 hours",
+      "additional_notes": "No work on Saturdays or Sundays"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Morning Class",
+        "start": {
+          "dateTime": "2025-12-15T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Seminar"
+      },
+      {
+        "id": "evt2",
+        "summary": "Afternoon Class",
+        "start": {
+          "dateTime": "2025-12-15T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Lab"
+      },
+      {
+        "id": "evt3",
+        "summary": "Morning Class",
+        "start": {
+          "dateTime": "2025-12-16T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Lecture"
+      },
+      {
+        "id": "evt4",
+        "summary": "Afternoon Meeting",
+        "start": {
+          "dateTime": "2025-12-16T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Research group"
+      },
+      {
+        "id": "evt5",
+        "summary": "All Day Workshop",
+        "start": {
+          "dateTime": "2025-12-17T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Required attendance"
+      },
+      {
+        "id": "evt6",
+        "summary": "Morning Commitment",
+        "start": {
+          "dateTime": "2025-12-18T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Volunteer work"
+      },
+      {
+        "id": "evt7",
+        "summary": "Afternoon Commitment",
+        "start": {
+          "dateTime": "2025-12-18T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Tutoring"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Major Project Part 1",
+        "subject": "Engineering",
+        "estimated_hours": 12.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Major Project Part 2",
+        "subject": "Engineering",
+        "estimated_hours": 10.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Problem Set",
+        "subject": "Math",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-18",
+        "priority": "high"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "split_type": "edge",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "5am-8am, 10pm-1am",
+      "max_daily_hours": 6,
+      "break_pattern": "10 min break every 90 minutes",
+      "additional_notes": "Extreme early bird and night owl, avoid midday"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Afternoon Lecture",
+        "start": {
+          "dateTime": "2025-12-15T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Required class"
+      },
+      {
+        "id": "evt2",
+        "summary": "Midday Meeting",
+        "start": {
+          "dateTime": "2025-12-16T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T13:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Advisor meeting"
+      },
+      {
+        "id": "evt3",
+        "summary": "Afternoon Lab",
+        "start": {
+          "dateTime": "2025-12-17T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Weekly lab"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Coding Project",
+        "subject": "CS",
+        "estimated_hours": 8.0,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Algorithm Design",
+        "subject": "CS",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-21",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "System Analysis",
+        "subject": "CS",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-23",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Documentation",
+        "subject": "CS",
+        "estimated_hours": 2.5,
+        "deadline": "2025-12-20",
+        "priority": "low"
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "split_type": "edge",
+    "feasibility": "infeasible",
+    "preferences": {
+      "study_windows": "2pm-4pm",
+      "max_daily_hours": 2,
+      "break_pattern": "30 min break every hour",
+      "additional_notes": "Medical condition limits study hours severely"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Medical Appointment",
+        "start": {
+          "dateTime": "2025-12-15T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Doctor visit"
+      },
+      {
+        "id": "evt2",
+        "summary": "Therapy",
+        "start": {
+          "dateTime": "2025-12-17T14:30:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T15:30:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Physical therapy"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Essay Draft",
+        "subject": "English",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Reading Assignment",
+        "subject": "History",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-18",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Problem Set",
+        "subject": "Math",
+        "estimated_hours": 3.0,
+        "deadline": "2025-12-18",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "split_type": "edge",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "9am-5pm, 7pm-10pm",
+      "max_daily_hours": 8,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Can work weekends if absolutely necessary"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Lecture Series",
+        "start": {
+          "dateTime": "2025-12-15T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Guest speaker"
+      },
+      {
+        "id": "evt2",
+        "summary": "Lab Work",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Research lab"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Literature Review",
+        "subject": "Research",
+        "estimated_hours": 12.0,
+        "deadline": "2025-12-21",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Data Collection",
+        "subject": "Research",
+        "estimated_hours": 10.0,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Statistical Analysis",
+        "subject": "Research",
+        "estimated_hours": 8.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 4,
+        "name": "Draft Results Section",
+        "subject": "Research",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-24",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "split_type": "edge",
+    "feasibility": "infeasible",
+    "preferences": {
+      "study_windows": "10am-2pm, 6pm-9pm",
+      "max_daily_hours": 6,
+      "break_pattern": "15 min break every 2 hours",
+      "additional_notes": "Standard availability"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Class",
+        "start": {
+          "dateTime": "2025-12-15T10:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Back-to-back classes"
+      },
+      {
+        "id": "evt2",
+        "summary": "Evening Commitment",
+        "start": {
+          "dateTime": "2025-12-15T18:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T21:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Work shift"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Urgent Paper",
+        "subject": "English",
+        "estimated_hours": 8.0,
+        "deadline": "2025-12-16",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Urgent Presentation",
+        "subject": "Business",
+        "estimated_hours": 6.0,
+        "deadline": "2025-12-16",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Urgent Problem Set",
+        "subject": "Math",
+        "estimated_hours": 5.0,
+        "deadline": "2025-12-16",
+        "priority": "high"
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "split_type": "edge",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "8am-10pm",
+      "max_daily_hours": 10,
+      "break_pattern": "10 min break every hour",
+      "additional_notes": "Finals week, can push hard"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Final Exam",
+        "start": {
+          "dateTime": "2025-12-20T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-20T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Chemistry final"
+      },
+      {
+        "id": "evt2",
+        "summary": "Final Exam",
+        "start": {
+          "dateTime": "2025-12-22T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-22T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Physics final"
+      },
+      {
+        "id": "evt3",
+        "summary": "Final Exam",
+        "start": {
+          "dateTime": "2025-12-24T09:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-24T12:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Math final"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Chemistry Exam Review",
+        "subject": "Chemistry",
+        "estimated_hours": 15.0,
+        "deadline": "2025-12-20",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Physics Exam Review",
+        "subject": "Physics",
+        "estimated_hours": 15.0,
+        "deadline": "2025-12-22",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Math Exam Review",
+        "subject": "Math",
+        "estimated_hours": 15.0,
+        "deadline": "2025-12-24",
+        "priority": "high"
+      },
+      {
+        "id": 4,
+        "name": "Practice Problems All Subjects",
+        "subject": "General",
+        "estimated_hours": 10.0,
+        "deadline": "2025-12-23",
+        "priority": "medium"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "split_type": "edge",
+    "feasibility": "infeasible",
+    "preferences": {
+      "study_windows": "1pm-5pm",
+      "max_daily_hours": 4,
+      "break_pattern": "20 min break every 2 hours",
+      "additional_notes": "No weekends"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Class Block",
+        "start": {
+          "dateTime": "2025-12-15T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T15:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Lecture"
+      },
+      {
+        "id": "evt2",
+        "summary": "Meeting",
+        "start": {
+          "dateTime": "2025-12-15T15:30:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-15T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Group project"
+      },
+      {
+        "id": "evt3",
+        "summary": "Afternoon Commitment",
+        "start": {
+          "dateTime": "2025-12-16T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Internship"
+      },
+      {
+        "id": "evt4",
+        "summary": "Class",
+        "start": {
+          "dateTime": "2025-12-17T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Lab"
+      },
+      {
+        "id": "evt5",
+        "summary": "Afternoon Block",
+        "start": {
+          "dateTime": "2025-12-18T13:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-18T17:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Work"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Complex Project Phase 1",
+        "subject": "Engineering",
+        "estimated_hours": 20.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "Research Paper",
+        "subject": "Science",
+        "estimated_hours": 12.0,
+        "deadline": "2025-12-19",
+        "priority": "high"
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "split_type": "edge",
+    "feasibility": "feasible",
+    "preferences": {
+      "study_windows": "12pm-6pm, 8pm-12am",
+      "max_daily_hours": 9,
+      "break_pattern": "10 min break every 90 minutes",
+      "additional_notes": "Long contiguous blocks preferred"
+    },
+    "existing_events": [
+      {
+        "id": "evt1",
+        "summary": "Seminar",
+        "start": {
+          "dateTime": "2025-12-16T14:00:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-16T16:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Weekly seminar"
+      },
+      {
+        "id": "evt2",
+        "summary": "Dinner Meeting",
+        "start": {
+          "dateTime": "2025-12-17T18:30:00",
+          "timeZone": "America/New_York"
+        },
+        "end": {
+          "dateTime": "2025-12-17T20:00:00",
+          "timeZone": "America/New_York"
+        },
+        "description": "Networking dinner"
+      }
+    ],
+    "new_tasks": [
+      {
+        "id": 1,
+        "name": "Dissertation Chapter Draft",
+        "subject": "Research",
+        "estimated_hours": 20.0,
+        "deadline": "2025-12-25",
+        "priority": "high"
+      },
+      {
+        "id": 2,
+        "name": "ConferencePaper Revisions",
+        "subject": "Research",
+        "estimated_hours": 12.0,
+        "deadline": "2025-12-23",
+        "priority": "high"
+      },
+      {
+        "id": 3,
+        "name": "Grant Proposal Section",
+        "subject": "Research",
+        "estimated_hours": 8.0,
+        "deadline": "2025-12-24",
+        "priority": "medium"
+      },
+      {
+        "id": 4,
+        "name": "Literature Database Update",
+        "subject": "Research",
+        "estimated_hours": 4.0,
+        "deadline": "2025-12-22",
+        "priority": "low"
+      }
+    ]
+  }
+]

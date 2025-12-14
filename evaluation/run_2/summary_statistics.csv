@@ -1,0 +1,6 @@
+Strategy,Conflict-free %,Deadline Compliance %,Parse Success %,Tasks Fully Scheduled,Tasks Partially Scheduled,Tasks Unscheduled,Workload Variance,Completion Ratio %,Fragmentation Score,Makespan (days),API Cost ($),Latency (s),LLM Quality Score,LLM Preference Score
+baseline,100.00,93.61,100.00,4.67,0.13,0.03,8.389,96.40,1.623,2.50,0.0000,0.000,48.33,44.00
+zero_shot,90.00,67.94,100.00,3.60,1.23,0.00,1.080,94.43,2.382,6.02,0.0184,5.202,67.67,62.00
+few_shot,93.33,70.28,100.00,3.70,1.13,0.00,1.166,95.71,2.326,4.59,0.0190,4.165,62.67,61.33
+chain_of_thought,86.67,63.39,100.00,3.37,1.47,0.00,1.049,92.49,2.237,5.25,0.0165,5.086,64.67,64.33
+constraint_first,93.33,71.89,100.00,3.80,1.03,0.00,1.202,96.82,2.402,4.82,0.0174,7.009,65.67,62.33

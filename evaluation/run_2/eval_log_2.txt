@@ -1,0 +1,300 @@
+======================================================================
+LLM Scheduler Evaluation
+======================================================================
+Model: gpt-4o
+Test file: evaluation/tests.json
+Output: evaluation/run_2/results_2.json
+Strategies: zero_shot, few_shot, chain_of_thought, constraint_first
+Test cases: 30
+======================================================================
+
+Test Case 1/30 (ID: 1)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 1, deadline: 100.0%, cost: $0.0172)
+  Running few_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0192)
+  Running chain_of_thought... ✓ (conflicts: 1, deadline: 100.0%, cost: $0.0151)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0165)
+
+Test Case 2/30 (ID: 2)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 3, deadline: 100.0%, cost: $0.0208)
+  Running few_shot... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0225)
+  Running chain_of_thought... ✓ (conflicts: 1, deadline: 83.3%, cost: $0.0184)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0200)
+
+Test Case 3/30 (ID: 3)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0192)
+  Running few_shot... ✓ (conflicts: 1, deadline: 100.0%, cost: $0.0162)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 40.0%, cost: $0.0160)
+  Running constraint_first... ✓ (conflicts: 1, deadline: 100.0%, cost: $0.0145)
+
+Test Case 4/30 (ID: 4)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0178)
+  Running few_shot... ✓ (conflicts: 0, deadline: 66.7%, cost: $0.0187)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 50.0%, cost: $0.0156)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0149)
+
+Test Case 5/30 (ID: 5)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0189)
+  Running few_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0180)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0191)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0189)
+
+Test Case 6/30 (ID: 6)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 66.7%, cost: $0.0191)
+  Running few_shot... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0219)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0195)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 66.7%, cost: $0.0197)
+
+Test Case 7/30 (ID: 7)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0182)
+  Running few_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0194)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0161)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0143)
+
+Test Case 8/30 (ID: 8)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0193)
+  Running few_shot... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0206)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 50.0%, cost: $0.0186)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0230)
+
+Test Case 9/30 (ID: 9)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 60.0%, cost: $0.0164)
+  Running few_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0200)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0163)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0174)
+
+Test Case 10/30 (ID: 10)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0198)
+  Running few_shot... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0207)
+  Running chain_of_thought... ✓ (conflicts: 1, deadline: 100.0%, cost: $0.0178)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0192)
+
+Test Case 11/30 (ID: 11)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 50.0%, cost: $0.0195)
+  Running few_shot... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0192)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0195)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0171)
+
+Test Case 12/30 (ID: 12)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0158)
+  Running few_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0176)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0163)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0140)
+
+Test Case 13/30 (ID: 13)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0214)
+  Running few_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0232)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0197)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0191)
+
+Test Case 14/30 (ID: 14)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0177)
+  Running few_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0174)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0160)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0143)
+
+Test Case 15/30 (ID: 15)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0178)
+  Running few_shot... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0213)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 66.7%, cost: $0.0162)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0186)
+
+Test Case 16/30 (ID: 16)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0193)
+  Running few_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0180)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0162)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0177)
+
+Test Case 17/30 (ID: 17)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0194)
+  Running few_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0208)
+  Running chain_of_thought... ✓ (conflicts: 1, deadline: 80.0%, cost: $0.0166)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0199)
+
+Test Case 18/30 (ID: 18)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0194)
+  Running few_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0195)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0154)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0156)
+
+Test Case 19/30 (ID: 19)
+  Split: standard, Feasibility: feasible, Tasks: 5
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0184)
+  Running few_shot... ✓ (conflicts: 0, deadline: 80.0%, cost: $0.0190)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0171)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0183)
+
+Test Case 20/30 (ID: 20)
+  Split: standard, Feasibility: feasible, Tasks: 6
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0221)
+  Running few_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0210)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0187)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 83.3%, cost: $0.0216)
+
+Test Case 21/30 (ID: 21)
+  Split: edge, Feasibility: infeasible, Tasks: 4
+  Running baseline... ✓ (conflicts: 0, deadline: 75.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 25.0%, cost: $0.0184)
+  Running few_shot... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0195)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0166)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0157)
+
+Test Case 22/30 (ID: 22)
+  Split: edge, Feasibility: feasible, Tasks: 4
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 25.0%, cost: $0.0171)
+  Running few_shot... ✓ (conflicts: 0, deadline: 75.0%, cost: $0.0158)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 50.0%, cost: $0.0153)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 75.0%, cost: $0.0142)
+
+Test Case 23/30 (ID: 23)
+  Split: edge, Feasibility: infeasible, Tasks: 3
+  Running baseline... ✓ (conflicts: 0, deadline: 66.7%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 33.3%, cost: $0.0166)
+  Running few_shot... ✓ (conflicts: 0, deadline: 33.3%, cost: $0.0179)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 33.3%, cost: $0.0161)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0156)
+
+Test Case 24/30 (ID: 24)
+  Split: edge, Feasibility: feasible, Tasks: 4
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 50.0%, cost: $0.0178)
+  Running few_shot... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0190)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 75.0%, cost: $0.0170)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 100.0%, cost: $0.0157)
+
+Test Case 25/30 (ID: 25)
+  Split: edge, Feasibility: infeasible, Tasks: 3
+  Running baseline... ✓ (conflicts: 0, deadline: 66.7%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 66.7%, cost: $0.0123)
+  Running few_shot... ✓ (conflicts: 0, deadline: 33.3%, cost: $0.0127)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0103)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0101)
+
+Test Case 26/30 (ID: 26)
+  Split: edge, Feasibility: feasible, Tasks: 4
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 25.0%, cost: $0.0199)
+  Running few_shot... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0206)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 25.0%, cost: $0.0185)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 25.0%, cost: $0.0196)
+
+Test Case 27/30 (ID: 27)
+  Split: edge, Feasibility: infeasible, Tasks: 3
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0128)
+  Running few_shot... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0149)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0115)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0135)
+
+Test Case 28/30 (ID: 28)
+  Split: edge, Feasibility: feasible, Tasks: 4
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 1, deadline: 0.0%, cost: $0.0233)
+  Running few_shot... ✓ (conflicts: 0, deadline: 25.0%, cost: $0.0263)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0162)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 25.0%, cost: $0.0303)
+
+Test Case 29/30 (ID: 29)
+  Split: edge, Feasibility: infeasible, Tasks: 2
+  Running baseline... ✓ (conflicts: 0, deadline: 0.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0158)
+  Running few_shot... ✓ (conflicts: 1, deadline: 0.0%, cost: $0.0127)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 0.0%, cost: $0.0142)
+  Running constraint_first... ✓ (conflicts: 1, deadline: 0.0%, cost: $0.0125)
+
+Test Case 30/30 (ID: 30)
+  Split: edge, Feasibility: feasible, Tasks: 4
+  Running baseline... ✓ (conflicts: 0, deadline: 100.0%)
+  Running zero_shot... ✓ (conflicts: 0, deadline: 50.0%, cost: $0.0194)
+  Running few_shot... ✓ (conflicts: 0, deadline: 75.0%, cost: $0.0162)
+  Running chain_of_thought... ✓ (conflicts: 0, deadline: 25.0%, cost: $0.0154)
+  Running constraint_first... ✓ (conflicts: 0, deadline: 75.0%, cost: $0.0209)
+
+======================================================================
+Results saved to evaluation/run_2/results_2.json
+======================================================================
+
+
+====================================================================================================================================================================================
+COMPREHENSIVE SUMMARY METRICS (Mean ± Std)
+====================================================================================================================================================================================
+
+--- CONSTRAINT & CORRECTNESS METRICS ---
+Strategy             | Conflict-free % | Deadline %      | Parse %      | Fully Sched  | Partial    | Unsched   
+------------------------------------------------------------------------------------------------------------------------
+Baseline             |          100.0% |   93.6± 19.7% |       100.0% |         4.7 |       0.1 |       0.0
+zero_shot            |           90.0% |   67.9± 33.7% |       100.0% |         3.6 |       1.2 |       0.0
+few_shot             |           93.3% |   70.3± 33.7% |       100.0% |         3.7 |       1.1 |       0.0
+chain_of_thought     |           86.7% |   63.4± 36.7% |       100.0% |         3.4 |       1.5 |       0.0
+constraint_first     |           93.3% |   71.9± 37.4% |       100.0% |         3.8 |       1.0 |       0.0
+
+--- QUALITY & SYSTEM METRICS ---
+Strategy             | Workload Var    | Completion %    | Frag Score   | Makespan     | Cost ($)     | Latency (s) 
+----------------------------------------------------------------------------------------------------------------------------------
+Baseline             |   8.39± 8.74 |   96.4± 11.7% |  1.62±0.75 |   2.5±2.0 | 0.000±0.000 |  0.00±0.00
+zero_shot            |   1.08± 1.20 |   94.4± 19.0% |  2.38±0.69 |   6.0±1.7 | 0.018±0.002 |  5.20±1.60
+few_shot             |   1.17± 1.06 |   95.7± 20.9% |  2.33±0.61 |   4.6±1.5 | 0.019±0.003 |  4.17±1.11
+chain_of_thought     |   1.05± 0.81 |   92.5± 21.3% |  2.24±0.61 |   5.3±1.6 | 0.017±0.002 |  5.09±1.95
+constraint_first     |   1.20± 1.31 |   96.8± 21.9% |  2.40±0.89 |   4.8±1.6 | 0.017±0.004 |  7.01±2.42
+
+--- LLM-BASED EVALUATION METRICS ---
+Strategy             | Quality Score   | Preference Score  
+------------------------------------------------------------
+Baseline             |  48.3±  9.7 |  44.0± 16.0
+zero_shot            |  67.7±  5.7 |  62.0± 14.2
+few_shot             |  62.7±  6.8 |  61.3± 16.1
+chain_of_thought     |  64.7±  7.5 |  64.3± 14.1
+constraint_first     |  65.7±  7.9 |  62.3± 17.1
+====================================================================================================================================================================================
+
+✓ Summary statistics saved to evaluation/summary_statistics.csv
+
+✓ Created 8 comparison plots in evaluation/run_2/plots/
+  - 01_conflict_free_rate.png
+  - 02_deadline_compliance.png
+  - 03_workload_variance.png
+  - 04_api_cost.png
+  - 05_completion_ratio.png
+  - 06_fragmentation.png
+  - 07_makespan.png
+  - 08_cost_vs_quality.png
+
+Evaluation complete!

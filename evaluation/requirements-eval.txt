@@ -1,0 +1,13 @@
+# Evaluation Pipeline Additional Dependencies
+# Install these ONLY if you're running the evaluation pipeline
+# Last updated: December 13, 2025
+
+# First install the base requirements:
+# pip install -r ../requirements.txt
+
+# Then install these evaluation-specific packages:
+numpy>=1.24.0
+matplotlib>=3.7.0
+
+# Optional for statistical analysis
+# scipy>=1.10.0

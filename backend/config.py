@@ -23,6 +23,7 @@ class Settings:
     default_scheduler: str = "llm"  # or "baseline"
     default_buffer_minutes: int = 15
     default_max_daily_hours: int = 6
+    default_study_habits: str = ""
 
     # LLM settings
     llm_model: str = "gpt-4o"
@@ -37,5 +38,6 @@ def get_settings() -> Settings:
         default_scheduler=os.getenv("DEFAULT_SCHEDULER", "llm"),
         default_buffer_minutes=int(os.getenv("DEFAULT_BUFFER_MINUTES", "15")),
         default_max_daily_hours=int(os.getenv("DEFAULT_MAX_DAILY_HOURS", "6")),
+        default_study_habits=os.getenv("DEFAULT_STUDY_HABITS", ""),
         llm_model=os.getenv("LLM_MODEL", "gpt-4o")
     )
